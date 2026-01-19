@@ -4,10 +4,10 @@
 #let degree = "Bachelor"
 #let program = "Information Systems"
 #let examiner = "Prof. Dr. Stephan Krusche"
-#let supervisors = ("Jolanda Krümelmonster, M.Sc.",)
-#let author = "(Author)"
-#let birthdate = datetime(day: 01, month: 01, year: 2002) // only necessary for registration certificate
-#let startDate = datetime(day: 1, month: 1, year: 2024)
-#let submissionDate = datetime(day: 1, month: 1, year: 2024)
-#let presentationDate = datetime(day: 1, month: 1, year: 2024)
+#let supervisors = ("Tobias Wasner, M.Sc.",)
+#let author = "Konstantin Starke"
+#let birthdate = datetime(day: 01, month: 01, year: 2003) // only necessary for registration certificate
+#let startDate = datetime(day: 21, month: 11, year: 2025)
+#let submissionDate = datetime(day: 23, month: 3, year: 2026)
+#let presentationDate = datetime(day: 5, month: 3, year: 2026)
 #let feedbacklogSubmissionDate = datetime.today()
