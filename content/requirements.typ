@@ -168,6 +168,11 @@ This model separates automated issue discovery from human decision-making. It ma
 
 ]
 
+#figure(   
+  image("../figures/ClassDiagram.pdf", width: 95%),                                    
+  caption: [Analysis Object Model for the review system.],
+)
+
 === Dynamic Model
 #TODO[
   This subsection should contain dynamic UML diagrams. These can be a UML state diagrams, UML communication diagrams or UML activity diagrams.*Important:* Make sure to describe the diagram and its rationale in the text. *Do not use UML sequence diagrams.*
