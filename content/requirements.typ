@@ -133,13 +133,38 @@ Sofia then reviews a second comment that proposes an edit in the test file. She 
 
 === Use Case Model
 #TODO[
-  This subsection should contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram.
+  This subsection should contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram. Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex).
 
 ]
+To model the review workflow, this subsection follows the structure proposed by Bruegge and Dutoit TODO: cite BRUGGE. It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
+
+The Instructor serves as the central actor. Instructors use the review system to discuss and resolve issues in programming exercises and to incorporate LLM-based consistency feedback. All interactions occur within the Artemis programming exercise editor, where review comments provide the shared interface for collaboration and resolution.
+
+#par(first-line-indent: 0pt)[*Basic Review Collaboration Use Cases*]
+
+The first diagram models the core review mechanisms without consistency checks. Two instructors can start and reply to threads, edit or delete comments, and mark threads as resolved. The model emphasizes peer discussion and coordination on issues that instructors identify manually. It also shows that both instructors can participate in the same thread lifecycle, which supports shared ownership and accountability during exercise preparation.
+
+This model highlights the review system as a collaboration layer within Artemis rather than a separate tool. By focusing on thread creation, replies, edits, deletions, and resolution, the diagram captures the minimal set of interactions needed to coordinate review work and document rationale over time.
+
+#figure(   
+  image("../figures/UseCaseBasic.pdf", width: 70%),                                    
+  caption: [Use case diagram for basic, collaborative reviewing.],
+)
+
+#par(first-line-indent: 0pt)[*Consistency Check Review Use Cases*]
+
+The second diagram focuses on review workflows that start with a consistency check. The Instructor runs a check, filters and jumps to threads, and applies code changes. The check includes the creation of review threads so detected issues enter the same review process. Applying a code change extends the resolution flow because the system can mark the thread as resolved after the change.
+
+This model separates automated issue discovery from human decision-making. It makes clear that the system uses consistency checks to populate review threads, while instructors retain control over navigation, fixes, and resolution. The separation between check initiation, thread navigation, and code changes keeps the workflow transparent and aligns the automated assistance with established review practices.
+
+#figure(   
+  image("../figures/UseCaseConsistency.pdf", width: 70%),                                    
+  caption: [Use case diagram the review process with consistency checks.],
+)
 
 === Analysis Object Model
 #TODO[
-  This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see @bruegge2004object). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
+  This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see TODO: cite BRUEGGE). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
 
 ]
 

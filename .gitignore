@@ -1,3 +1,4 @@
 *.pdf
+!figures/*.pdf
 .idea
 .vscode
