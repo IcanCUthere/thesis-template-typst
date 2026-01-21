@@ -5,17 +5,22 @@
   Describe each proven technology / concept shortly that is important to understand your thesis. Point out why it is interesting for your thesis. Make sure to incorporate references to important literature here.
 ]
 
-== e.g. User Feedback
+== Artemis and the Exercise Model
 #TODO[
-  This section would summarize the concept User Feedback using definitions, historical overviews and pointing out the most important aspects of User Feedback.
+  Summarize Artemis as a learning platform and explain the structure of programming exercises (problem statement, template, solution, tests). Highlight why consistency across these artifacts matters for grading and learning.
 ]
 
-== e.g. Representational State Transfer
+== LLM-Based Consistency Checking
 #TODO[
-  This section would summarize the architectural style Representational State Transfer (REST) using definitions, historical overviews and pointing out the most important aspects of the architecture.
+  Describe how large language models are used to detect inconsistencies in multi-file artifacts, typical strengths/limitations, and why human review remains necessary.
 ]
 
-== e.g. Scrum
+== Human-in-the-Loop Review in Education
 #TODO[
-  This section would summarize the agile method Scrum using definitions, historical overviews and pointing out the most important aspects of Scrum.
+  Introduce human-in-the-loop workflows in educational systems, focusing on instructor oversight, accountability, and quality assurance for AI-assisted outputs.
+]
+
+== Review Comment Systems
+#TODO[
+  Explain the concept of review comments, inline annotations, resolution states, and why such systems provide a foundation for persistent issue tracking.
 ]
