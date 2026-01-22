@@ -5,7 +5,7 @@
   This chapter follows the Requirements Analysis Document Template in @bruegge2004object. Important: Make sure that the whole chapter is independent of the chosen technology and development platform. The idea is that you illustrate concepts, taxonomies and relationships of the application domain independent of the solution domain! Cite @bruegge2004object several times in this chapter.
 
 ]
-This chapter examines the requirements for integrating AI-assisted review into Artemis. We follow the design process described by Bruegge and Dutoit TODO: CITE BRUEGGE. First, we define the scope and highlight the major objectives of the proposed system. We then describe the existing system before detailing the functional and non-functional requirements in the Proposed System section. Finally, the System Models section describes system models to illustrate the concepts further.
+This chapter examines the requirements for integrating AI-assisted review into Artemis. We follow the design process described by Bruegge and Dutoit #cite(<bruegge2004object>). First, we define the scope and highlight the major objectives of the proposed system. We then describe the existing system before detailing the functional and non-functional requirements in the Proposed System section. Finally, the System Models section describes system models to illustrate the concepts further.
 
 == Overview
 #TODO[
@@ -72,7 +72,7 @@ These requirements ensure that instructors retain control over final changes whi
   - QA3 Category: Short Description.
 
 ]
-This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by TODO: Cite BRUEGGE.
+This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by #cite(<bruegge2004object>).
 
 #par(first-line-indent: 0pt)[*QA1 Usability*]
 The system shall provide an intuitive interface that requires minimal technical expertise. The workflow shall guide instructors step by step, minimize cognitive load, and present consistent inline comments and previews that remain readable in common themes.
@@ -119,6 +119,9 @@ Nina, an experienced instructor for Software Engineering, prepares a complex pro
 
 After the update, the system keeps the resolved comments linked to the new exercise version and shows which changes resulted from the automated fixes. Nina scans the overview list to confirm that all high-severity issues are resolved, checks a few comment threads for clarity, and continues refining the exercise content. This visionary scenario outlines a future state in which consistency maintenance becomes largely automatic while still keeping instructors in control through transparent review comments and versioned history.
 
+#par(first-line-indent: 0pt)[*Visionary Scenario 2 - LLM-Assisted Exercise Expansion*]
+Kai, an instructor for Software Architecture, wants to expand an exercise with an additional design-pattern task. He adds a review comment that describes the new requirement and the expected learning outcome. The system sends the comment to the LLM and returns code suggestions that extend the problem statement, template, solution, and tests to match the new task. The review thread explains the proposed changes and highlights the new sections so Kai can review the expansion in context. This visionary scenario shows how instructors can use review comments to request substantial exercise extensions while keeping the process transparent and aligned with their intent.
+
 #par(first-line-indent: 0pt)[*Demo Scenario 1 - Collaborative Review without Consistency Check*]
 
 Lea and Omar, two instructors for Software Engineering, review a new programming exercise before the semester starts. Lea spots an ambiguous requirement in the problem statement and adds a review comment at the exact line, proposing clearer wording and a concrete example. Omar opens the comment thread, asks for a minor adjustment, and adds a follow-up suggestion that aligns the wording with the template variables. Lea accepts the suggestion, updates the text, and marks the comment as resolved. The system keeps the resolved thread attached to the exercise version so both instructors can revisit the rationale later.
@@ -136,7 +139,7 @@ Sofia then reviews a second comment that proposes an edit in the test file. She 
   This subsection should contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram. Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex).
 
 ]
-To model the review workflow, this subsection follows the structure proposed by Bruegge and Dutoit TODO: cite BRUGGE. It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
+To model the review workflow, this subsection follows the structure proposed by Bruegge and Dutoit #cite(<bruegge2004object>). It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
 
 The Instructor serves as the central actor. Instructors use the review system to discuss and resolve issues in programming exercises and to incorporate LLM-based consistency feedback. All interactions occur within the Artemis programming exercise editor, where review comments provide the shared interface for collaboration and resolution.
 
@@ -164,7 +167,7 @@ This model separates automated issue discovery from human decision-making. It ma
 
 === Analysis Object Model
 #TODO[
-  This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see TODO: cite BRUEGGE). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
+  This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see #cite(<bruegge2004object>)). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
 
 ]
 
