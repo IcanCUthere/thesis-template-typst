@@ -42,16 +42,25 @@ In cases of conflict, the system follows an instructor-first principle: reliabil
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
-The subsystem decomposition in #ref(<SubsystemDecomp>) separates the review workflow into client, server, persistence, and LLM provider concerns. On the client side, the UI consumes the ReviewService and CheckService interfaces to load review threads, submit replies, and trigger consistency checks without coupling to server internals.
+The subsystem decomposition splits the review workflow into server and client concerns, shown in #ref(<SubsystemDecompServer>) and #ref(<SubsystemDecompClient>).
 
-The server side groups components into three layers. The Web Layer exposes REST endpoints through ReviewResource and ConsistencyCheckResource, which delegate to the application layer. The Application Layer contains the ReviewSystem, ConsistencyCheck, and ExerciseVersioning components. ReviewSystem coordinates thread lifecycle and comment state, ConsistencyCheck orchestrates calls to the LLM provider and transforms results into review threads, and ExerciseVersioning ensures that applied fixes create new exercise versions. The Persistence Layer provides CommentRepository and ThreadRepository, which supply data access via DataProviderService interfaces to the application layer.
+#par(first-line-indent: 0pt)[*Server Side*]
+The server diagram in #ref(<SubsystemDecompServer>) groups components into persistence, application, and web layers. The Persistence Layer contains CommentRepository and ThreadRepository. They expose DataProviderService interfaces that supply thread and comment data to the application layer. The Application Layer contains ReviewSystem, ConsistencyCheck, and ExerciseVersioning. ReviewSystem manages thread lifecycle and state changes, ConsistencyCheck orchestrates LLM requests and transforms results into review threads, and ExerciseVersioning creates new exercise versions when fixes apply. The Web Layer exposes ReviewResource and ConsistencyCheckResource, which provide REST endpoints for the client-facing services.
 
-The LLM Provider subsystem offers a PromptService that ConsistencyCheck consumes to execute consistency checks. This separation keeps LLM access behind a dedicated interface and allows alternative providers without changing the review workflow. The dependencies shown in the diagram clarify that web resources depend on application services, application services depend on repositories and the LLM provider, and the client communicates only through the exposed service interfaces.
+The LLM Provider subsystem offers a PromptService that ConsistencyCheck consumes to execute checks. This separation keeps LLM access behind a dedicated interface and allows alternative providers without changing the review workflow. The dependencies in the diagram show that web resources depend on application services, application services depend on repositories and the LLM provider, and the client communicates only through the exposed service interfaces.
 
 #figure(
-  image("../figures/Subsystem Decomposition.pdf", width: 100%),
-  caption: [Sybsystem Decomposition of the server side.],
-) <SubsystemDecomp>
+  image("../figures/Subsystem Decomposition Server.pdf", width: 95%),
+  caption: [Subsystem decomposition of the server side.],
+) <SubsystemDecompServer>
+
+#par(first-line-indent: 0pt)[*Client Side*]
+The client diagram in #ref(<SubsystemDecompClient>) separates the UI from service access. The Service Layer exposes ReviewService and ConsistencyCheckService interfaces, which the UI uses to load threads, start checks, and apply changes. The User Interface Layer contains the CodeEditorContainer, CodeEditor, and CommentOverview components. CodeEditorContainer orchestrates the editor and overview, the CodeEditor renders inline comments and applies edits, and CommentOverview supports filtering and navigation. This split keeps the UI modular and allows the review workflow to evolve without changing how the editor talks to the server.
+
+#figure(
+  image("../figures/Subsystem Decomposition Client.pdf", width: 95%),
+  caption: [Subsystem decomposition of the client side.],
+) <SubsystemDecompClient>
 
 == Hardware Software Mapping
 #TODO[
