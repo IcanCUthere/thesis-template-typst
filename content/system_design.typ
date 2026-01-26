@@ -18,11 +18,40 @@ Artemis operates as a web application with a client-server architecture. The cli
 #TODO[
   Derive design goals from your quality attributes and constraints, prioritize them (as they might conflict with each other) and describe the rationale of your prioritization. Any trade-offs between design goals (e.g., build vs. buy, memory space vs. response time), and the rationale behind the specific solution should be described in this section
 ]
+The design goals derive from the functional requirements, quality attributes, and constraints defined in Chapter 4. Following Bruegge and Dutoit’s guidance on prioritizing conflicting objectives #cite(<bruegge2004object>), the goals below describe the primary forces that shape the architecture and the trade-offs between them.
+
+#par(first-line-indent: 0pt)[*Usability and Familiar Review Interaction*]
+The system must provide a low-friction review experience that aligns with common tools instructors already use. The architecture therefore prioritizes a GitHub-style comment model and a VS Code-like overview navigation, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors can interpret and act on comments quickly (QA1, FR1).
+
+#par(first-line-indent: 0pt)[*Reliability and Safe Issue Resolution*]
+All changes must remain under instructor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested fixes (QA2, FR3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
+
+#par(first-line-indent: 0pt)[*Persistence and Traceability*]
+Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors to track decisions and collaborate effectively (FR2). This goal supports auditability and reduces repeated work across iterations.
+
+#par(first-line-indent: 0pt)[*Performance and Responsiveness*]
+The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors can continue working while data loads (QA3). Performance is important, but it does not outweigh correctness and usability.
+
+#par(first-line-indent: 0pt)[*Modularity and Extensibility*]
+The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA4). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
+
+#par(first-line-indent: 0pt)[*Prioritization and Trade-offs*]
+In cases of conflict, the system follows an instructor-first principle: reliability and correctness take precedence over speed, and clarity of review comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with human-in-the-loop requirements.
 
 == Subsystem Decomposition
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
+The subsystem decomposition in #ref(<SubsystemDecomp>) separates the review workflow into client, server, persistence, and LLM provider concerns. On the client side, the UI consumes the ReviewService and CheckService interfaces to load review threads, submit replies, and trigger consistency checks without coupling to server internals.
+
+The server side groups components into three layers. The Web Layer exposes REST endpoints through ReviewResource and ConsistencyCheckResource, which delegate to the application layer. The Application Layer contains the ReviewSystem, ConsistencyCheck, and ExerciseVersioning components. ReviewSystem coordinates thread lifecycle and comment state, ConsistencyCheck orchestrates calls to the LLM provider and transforms results into review threads, and ExerciseVersioning ensures that applied fixes create new exercise versions. The Persistence Layer provides CommentRepository and ThreadRepository, which supply data access via DataProviderService interfaces to the application layer.
+
+The LLM Provider subsystem offers a PromptService that ConsistencyCheck consumes to execute consistency checks. This separation keeps LLM access behind a dedicated interface and allows alternative providers without changing the review workflow. The dependencies shown in the diagram clarify that web resources depend on application services, application services depend on repositories and the LLM provider, and the client communicates only through the exposed service interfaces.
+
+#figure(
+  image("../figures/Subsystem Decomposition.pdf", width: 100%),
+  caption: [Sybsystem Decomposition of the server side.],
+) <SubsystemDecomp>
 
 == Hardware Software Mapping
 #TODO[
