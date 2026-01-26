@@ -5,10 +5,14 @@
   This chapter follows the System Design Document Template in @bruegge2004object. You describe in this chapter how you map the concepts of the application domain to the solution domain. Some sections are optional, if they do not apply to your problem. Cite @bruegge2004object several times in this chapter.
 ]
 
+In this chapter, we map the concepts of the application domain to the solution domain. Following the System Design Document Template described by Bruegge and Dutoit #cite(<bruegge2004object>), we use the results of the analysis-such as the functional requirements, constraints, and quality attributes-to guide architectural decisions. The goal of this chapter is to establish the technical structure that enables the implementation of the required features. We describe the overall architecture of the review workflow in Artemis, outline the design goals derived from the quality attributes, decompose the system into subsystems, and explain how persistence and access control are realized in the solution domain.
+
 == Overview
 #TODO[
   Provide a brief overview of the software architecture and references to other chapters (e.g. requirements), references to existing systems, constraints impacting the software architecture..
 ]
+
+Artemis operates as a web application with a client-server architecture. The client provides the programming exercise editor and review UI, while the server hosts the review workflow, persistence logic, and integration with Hyperion via Spring AI. Client and server communicate through REST endpoints, which keeps presentation and business logic separated and supports stable integration with existing Artemis components. The review subsystem integrates into the existing exercise and versioning infrastructure so that review comments remain linked to the correct exercise version and permissions.
 
 == Design Goals
 #TODO[
