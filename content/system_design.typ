@@ -66,6 +66,9 @@ The client diagram in #ref(<SubsystemDecompClient>) separates the UI from servic
 #TODO[
   This section describes how the subsystems are mapped onto existing hardware and software components. The description is accompanied by a UML deployment diagram. The existing components are often off-the-shelf components. If the components are distributed on different nodes, the network infrastructure and the protocols are also described.
 ]
+The review workflow reuses the existing Artemis deployment and does not introduce new hardware nodes. The client runs in the browser as part of the Artemis web application, and the server runs in the existing Artemis backend environment. LLM requests go through the existing Hyperion integration via Spring AI.
+
+The implementation follows the established Artemis tech stack: Angular on the client, Spring Boot on the server, and a relational database (PostgreSQL or MySQL) for persistence. Client and server communicate through REST endpoints, and the review subsystem integrates into the existing exercise and versioning services.
 
 == Persistent Data Management
 #TODO[
@@ -76,6 +79,9 @@ The client diagram in #ref(<SubsystemDecompClient>) separates the UI from servic
 #TODO[
   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
 ]
+The review system restricts all review actions to instructors. Only users with instructor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested fixes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
+
+Access control follows existing Artemis authorization rules for programming exercises. Review threads inherit the same access scope as the exercise and its repository, so only instructors assigned to the course can access the data. Server-side endpoints in ReviewResource and ConsistencyCheckResource enforce these checks, and the client only exposes review UI elements when the user has the required role.
 
 == Global Software Control
 #TODO[
