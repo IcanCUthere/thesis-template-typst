@@ -170,18 +170,46 @@ This model separates automated issue discovery from human decision-making. It ma
   This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see #cite(<bruegge2004object>)). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
 
 ]
+The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise owns one or more CodeRepositories, and each repository aggregates Files. A File contains text and a path, and it provides the context in which review Threads appear.
 
 #figure(   
   image("../figures/ClassDiagram.pdf", width: 95%),                                    
   caption: [Analysis Object Model for the review system.],
-)
+) <AOM>
+
+A Thread captures a discussion at a specific location in a file. It stores its resolution state and the locationInFile, and it offers operations to create and manage comments. Threads can also group with other threads to represent related issues across the same exercise. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
+
+Comment acts as an abstract superclass with a shared author attribute that can reference either an instructor or an LLM agent as author, and it enables additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents instructor-written discussion and supports editing, while ConsistencyComment represents LLM-generated findings and carries severity, category, and codeFix information with an applyFix action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
+
+The model focuses on domain concepts that instructors reason about during review: exercises, files, threads, and comment types. It separates comment content and issue metadata from file context and thread state, which clarifies ownership and supports persistence across versions. This structure keeps the review workflow consistent whether issues originate from manual discussion or from consistency checks.
 
 === Dynamic Model
 #TODO[
   This subsection should contain dynamic UML diagrams. These can be a UML state diagrams, UML communication diagrams or UML activity diagrams.*Important:* Make sure to describe the diagram and its rationale in the text. *Do not use UML sequence diagrams.*
 ]
+The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review workflow across the Instructor, Artemis, and the LLM Service. The process starts when the Instructor triggers a consistency check, Artemis forwards the request to the LLM Service, and the LLM returns either no inconsistencies or a list of issues. The model explicitly accounts for false positives, so the Instructor can discard issues that are not valid. When Artemis receives issues, it stores them and displays them as inline comments so the Instructor can jump to each one.
+
+For every issue, the Instructor decides whether it represents a real inconsistency. If not, the Instructor discards it and Artemis hides the comment. If it is an actual issue, the Instructor evaluates the proposed fix. When the fix does not make sense, the Instructor applies a manual correction and marks the issue as resolved, which shows that the workflow still relies on human intervention when LLM suggestions fall short. When the fix does make sense, the Instructor applies it through Artemis, which updates the exercise, marks the issue as resolved, creates a new exercise version, and hides the comment. The workflow loops while issues remain and ends once the Instructor resolves or discards all comments. This model highlights the human-in-the-loop control flow and the system's role in persistence and versioning, and it leaves room for future extensions that improve the quality of automated fixes.
+
+#figure(   
+  image("../figures/ActivityDiagram.pdf", width: 95%),                                    
+  caption: [Activity Diagram for the review system.],
+) <ACTDIA>
 
 === User Interface
 #TODO[
   Show mockups of the user interface of the software you develop and their connections / transitions. You can also create a storyboard. *Important:* Describe the mockups and their rationale in the text.
 ]
+The user interface aims for familiarity to reduce onboarding effort. The review comments follow patterns from GitHub-style code review, as shown in #ref(<UIGitHub>), so instructors can recognize threads, replies, and resolution states without learning a new interaction model.
+
+#figure(
+  image("../figures/UI Mockups/GitHub.png", width: 70%),
+  caption: [GitHub comment example.],
+) <UIGitHub>
+
+For the overview UI, the editor needed a dedicated space to list and filter comments. Refactoring the layout to a VS Code-like structure with a left-side tab view, shown in #ref(<UIOverview>), provided a familiar navigation area while keeping the editor visible. This choice balances screen space and discoverability and keeps the review workflow consistent with tools instructors already use.
+
+#figure(
+  image("../figures/UI Mockups/One-Sided Comments.png", width: 95%),
+  caption: [Mockup of the overview UI to navigate between comments.],
+) <UIOverview>
