@@ -88,7 +88,9 @@ Access control follows existing Artemis authorization rules for programming exer
   Optional section describing the control flow of the system, in particular, whether a monolithic, event-driven control flow or concurrent processes have been selected, how requests are initiated and specific synchronization issues
 ]
 
+/*
 == Boundry Conditions
 #TODO[
   Optional section describing the use cases how to start up the separate components of the system, how to shut them down, and what to do if a component or the system fails.
 ]
+*/

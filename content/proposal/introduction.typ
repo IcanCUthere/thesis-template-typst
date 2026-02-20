@@ -10,7 +10,7 @@
   - (Not more than 1/2 a page)
 ]
 
-Artemis is a learning platform widely used in higher education to support programming education through interactive exercises and automatic assessment #cite(<Krusche2018284>). It integrates with version-controlled repositories and continuous integration systems and has recently been extended with large language models (LLMs). Through Iris, the integrated LLM-based chatbot, students can receive explanations and guidance while solving exercises #cite(<Bassner2024394>).
+Artemis supports programming education in higher education through interactive exercises and automatic assessment #cite(<Krusche2018284>). Many institutions rely on the platform, which integrates with version-controlled repositories and continuous integration systems, and the development team has recently added large language models (LLMs). Through Iris, the integrated LLM-based chatbot, students can receive explanations and guidance while solving exercises #cite(<Bassner2024394>).
 
 In addition to student support, Artemis also allows instructors to use LLMs to review programming exercises. Each exercise consists of a problem statement, a template, a solution, and tests, which must remain consistent with each other. The system can query an LLM to detect inconsistencies and returns a structured JSON output describing each issue, its severity, and suggested fixes.
 

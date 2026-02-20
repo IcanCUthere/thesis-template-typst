@@ -39,29 +39,28 @@ The proposed system extends Artemis with a review-centric consistency workflow t
 
 This section specifies the functional requirements of the review workflow. Each requirement describes a distinct capability the system must provide to support instructors in reviewing, discussing, and resolving consistency issues within Artemis.
 
-#par(first-line-indent: 0pt)[*FR1 Review Comment Presentation and Navigation*]
+#par(first-line-indent: 0pt)[*Basic Review System Functionality*]
 
-- *FR1.1 Create Review Comments from Consistency Checks:* The system shall convert Hyperion consistency check results into review comments linked to the affected file and line range.
-- *FR1.2 Display Inline Comments:* The system shall display review comments inline in the editor with severity, category, and suggested fix metadata.
-- *FR1.3 Provide Issue Overview:* The system shall provide an overview list with filtering and navigation to each comment location.
+- *FR1 Create Review Threads and User Comments:* The system shall allow instructors to create review threads anchored to a specific file and line and add user-written comments to these threads.
+- *FR2 Persist Review Threads:* The system shall store review threads with the exercise so they remain available across sessions.
+- *FR3 Reply to Threads:* The system shall allow instructors to reply within an existing thread to continue the discussion.
+- *FR4 Edit User Comments:* The system shall allow instructors to edit the content of their user comments.
+- *FR5 Delete Comments and Threads:* The system shall allow instructors to delete individual comments and remove entire threads.
+- *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the anchored location and provide navigation between threads.
+- *FR7 Mark Threads as Resolved:* The system shall allow instructors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
+- *FR8 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s anchored location has changed and mark the thread as outdated to signal that the context may no longer match.
 
-These requirements ensure that instructors can understand and navigate inconsistencies efficiently.
+These requirements define the baseline review workflow, independent of how issues are discovered.
 
-#par(first-line-indent: 0pt)[*FR2 Persistent Storage and Collaboration*]
+#par(first-line-indent: 0pt)[*Specific Consistency Issue Functionality*]
 
-- *FR2.1 Persist Review Comments:* The system shall store review comments with the exercise and its version so instructors can revisit them across sessions.
-- *FR2.2 Track Resolution State:* The system shall allow instructors to resolve, discard, or reopen comments and record these states.
-- *FR2.3 Sync Concurrent Changes:* The system shall synchronize comment updates across concurrent instructor sessions to prevent lost edits.
+- *FR9 Create Review Comments from Consistency Checks:* The system shall convert Hyperion consistency check results into review comments linked to the affected file and line range.
+- *FR10 Provide Fix Previews:* The system shall present suggested fixes side by side with the current content to enable review before changes.
+- *FR11 Apply Suggested Fixes:* The system shall allow instructors to apply a suggested fix and update the exercise content accordingly.
+- *FR12 Validate Suggestions:* The system shall check that a suggestion still matches the current file context before applying it.
+- *FR13 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors to jump from this list to the corresponding locations in the editor.
 
-These requirements ensure continuity and coordinated review workflows.
-
-#par(first-line-indent: 0pt)[*FR3 Suggested Fix Preview and Application*]
-
-- *FR3.1 Provide Fix Previews:* The system shall present suggested fixes side by side with the current content to enable review before changes.
-- *FR3.2 Apply Suggested Fixes:* The system shall allow instructors to apply a suggested fix and update the exercise content accordingly.
-- *FR3.3 Validate Suggestions:* The system shall check that a suggestion still matches the current file context before applying it.
-
-These requirements ensure that instructors retain control over final changes while reducing manual edits.
+These requirements define the consistency-check-specific workflow and ensure that instructors retain control over final changes while reducing manual edits.
 
 === Quality Attributes
 #TODO[

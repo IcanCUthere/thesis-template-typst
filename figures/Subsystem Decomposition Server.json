@@ -1,0 +1,624 @@
+{
+  "id": "72f10333-158d-491f-b830-982d87c3b79d",
+  "version": "4.0.0",
+  "title": "Subsystem Decomposition Server",
+  "type": "ComponentDiagram",
+  "nodes": [
+    {
+      "id": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "width": 1030,
+      "height": 670,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 750,
+        "y": -610
+      },
+      "data": {
+        "name": "Artemis Server",
+        "isComponentSubsystemHeaderShown": true
+      },
+      "measured": {
+        "width": 1030,
+        "height": 670
+      }
+    },
+    {
+      "id": "a1d95eb3-54d5-4680-a486-2ab17447e29d",
+      "width": 970,
+      "height": 150,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 30,
+        "y": 260
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "Application Layer",
+        "isComponentSubsystemHeaderShown": false
+      },
+      "measured": {
+        "width": 970,
+        "height": 150
+      }
+    },
+    {
+      "id": "1508b936-ad69-4ecd-aaa4-68585bc1f8dd",
+      "width": 970,
+      "height": 130,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 30,
+        "y": 70
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "Persistance Layer",
+        "isComponentSubsystemHeaderShown": false
+      },
+      "measured": {
+        "width": 970,
+        "height": 130
+      }
+    },
+    {
+      "id": "d3ab046c-3b0a-4218-9b63-a4ca0d867351",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 190,
+        "y": 50
+      },
+      "parentId": "1508b936-ad69-4ecd-aaa4-68585bc1f8dd",
+      "data": {
+        "name": "CommentRepository",
+        "isComponentHeaderShown": true,
+        "fillColor": "#26de81"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "53170091-a69e-43a1-960b-34cb8071f6fb",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 540,
+        "y": 50
+      },
+      "parentId": "1508b936-ad69-4ecd-aaa4-68585bc1f8dd",
+      "data": {
+        "name": "ThreadRepository",
+        "isComponentHeaderShown": true,
+        "fillColor": "#26de81"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "89168675-b011-4c72-aa99-6c131fa9ec8b",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 50,
+        "y": 60
+      },
+      "parentId": "a1d95eb3-54d5-4680-a486-2ab17447e29d",
+      "data": {
+        "name": "ExerciseVersioning",
+        "isComponentHeaderShown": true,
+        "fillColor": "#45aaf2"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "16235d63-5df2-4e27-8d9f-af034c72f6ad",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 680,
+        "y": 60
+      },
+      "parentId": "a1d95eb3-54d5-4680-a486-2ab17447e29d",
+      "data": {
+        "name": "ConsistencyCheck",
+        "isComponentHeaderShown": true,
+        "fillColor": "#45aaf2"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 370,
+        "y": 60
+      },
+      "parentId": "a1d95eb3-54d5-4680-a486-2ab17447e29d",
+      "data": {
+        "name": "ReviewSystem",
+        "isComponentHeaderShown": true,
+        "fillColor": "#26de81"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "a082dd3a-4c97-4eff-b107-9ad5aa10407c",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 320,
+        "y": 220
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "DataProviderService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "d26a8a05-fc1e-4a88-94f6-1dbfe29182c1",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 670,
+        "y": 220
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "DataProviderService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "5af9b636-99d2-4dbc-8ffd-2efee44b9f21",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 810,
+        "y": 470
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "ConsistencyCheckService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "dfc3799f-4794-495a-bce6-6c28f7410c40",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 250,
+        "y": 470
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "ReviewService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "10c48e49-e957-42d8-99ff-03bf726fde85",
+      "width": 970,
+      "height": 150,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 30,
+        "y": 500
+      },
+      "parentId": "9fb249d2-c5aa-45c6-a546-082f9ed5fc54",
+      "data": {
+        "name": "Web Layer",
+        "isComponentSubsystemHeaderShown": false
+      },
+      "measured": {
+        "width": 970,
+        "height": 150
+      }
+    },
+    {
+      "id": "dbf33528-1a26-4bee-a6ba-024947ae923a",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 120,
+        "y": 60
+      },
+      "parentId": "10c48e49-e957-42d8-99ff-03bf726fde85",
+      "data": {
+        "name": "ReviewResource",
+        "isComponentHeaderShown": true,
+        "fillColor": "#26de81"
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "5a67ddad-46bb-48e4-9329-72eb6444de0d",
+      "width": 220,
+      "height": 60,
+      "type": "component",
+      "position": {
+        "x": 620,
+        "y": 60
+      },
+      "parentId": "10c48e49-e957-42d8-99ff-03bf726fde85",
+      "data": {
+        "name": "ConsistencyCheckResource",
+        "isComponentHeaderShown": true
+      },
+      "measured": {
+        "width": 220,
+        "height": 60
+      }
+    },
+    {
+      "id": "a23438ee-3851-4ecf-985d-e346fb329f93",
+      "width": 180,
+      "height": 120,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 1160,
+        "y": 170
+      },
+      "data": {
+        "name": "Artemis Client",
+        "isComponentSubsystemHeaderShown": true
+      },
+      "measured": {
+        "width": 180,
+        "height": 120
+      }
+    },
+    {
+      "id": "029b0695-30d2-46d9-a329-b75feacb7af5",
+      "width": 180,
+      "height": 120,
+      "type": "componentSubsystem",
+      "position": {
+        "x": 1550,
+        "y": 170
+      },
+      "data": {
+        "name": "LLM Provider",
+        "isComponentSubsystemHeaderShown": true
+      },
+      "measured": {
+        "width": 180,
+        "height": 120
+      }
+    },
+    {
+      "id": "90b94b68-f55b-42f1-b6d4-7561cf750f73",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 1780,
+        "y": 80
+      },
+      "data": {
+        "name": "PromptService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "22e7ab16-2e2c-4cb8-b868-b7a92ebaf092",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 1000,
+        "y": 80
+      },
+      "data": {
+        "name": "ReviewService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "28fb698e-332d-42c1-af5e-0173191e8ad5",
+      "width": 20,
+      "height": 20,
+      "type": "componentInterface",
+      "position": {
+        "x": 1500,
+        "y": 80
+      },
+      "data": {
+        "name": "ConsistencyCheckService"
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "c844d39c-bfed-4c04-ad64-f1357c67b4f1",
+      "width": 160,
+      "height": 50,
+      "type": "colorDescription",
+      "position": {
+        "x": 750,
+        "y": 140
+      },
+      "data": {
+        "name": "New",
+        "fillColor": "#26de81"
+      },
+      "measured": {
+        "width": 160,
+        "height": 50
+      }
+    },
+    {
+      "id": "45c421c2-3534-4e5a-9a67-4050aa1b32a9",
+      "width": 160,
+      "height": 50,
+      "type": "colorDescription",
+      "position": {
+        "x": 750,
+        "y": 190
+      },
+      "data": {
+        "name": "Modified",
+        "fillColor": "#45aaf2"
+      },
+      "measured": {
+        "width": 160,
+        "height": 50
+      }
+    },
+    {
+      "id": "1c1e8a96-88e2-40d3-ab12-7e1a6be4e863",
+      "width": 160,
+      "height": 50,
+      "type": "colorDescription",
+      "position": {
+        "x": 750,
+        "y": 240
+      },
+      "data": {
+        "name": "Unchanged"
+      },
+      "measured": {
+        "width": 160,
+        "height": 50
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "983dd8f8-b98f-40d9-a4f8-0bb726ebd1b0",
+      "source": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "target": "d26a8a05-fc1e-4a88-94f6-1dbfe29182c1",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "right-top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "0be9700b-c734-4a39-aa9d-f912f67b6676",
+      "source": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "target": "16235d63-5df2-4e27-8d9f-af034c72f6ad",
+      "type": "ComponentDependency",
+      "sourceHandle": "right",
+      "targetHandle": "left",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "ccc2200c-94d2-460b-9045-bf9ea4186871",
+      "source": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "target": "89168675-b011-4c72-aa99-6c131fa9ec8b",
+      "type": "ComponentDependency",
+      "sourceHandle": "left",
+      "targetHandle": "right",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "cfadfe4e-4a55-42f9-a132-7474b027f88f",
+      "source": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "target": "a082dd3a-4c97-4eff-b107-9ad5aa10407c",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "left-top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "640fc426-fcb9-499d-80c4-78cfcdaf3583",
+      "source": "d3ab046c-3b0a-4218-9b63-a4ca0d867351",
+      "target": "a082dd3a-4c97-4eff-b107-9ad5aa10407c",
+      "type": "ComponentProvidedInterface",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "2ad1784f-4e83-4654-b409-f7a70dc70c67",
+      "source": "53170091-a69e-43a1-960b-34cb8071f6fb",
+      "target": "d26a8a05-fc1e-4a88-94f6-1dbfe29182c1",
+      "type": "ComponentProvidedInterface",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "c5ac9a39-0acf-4c8c-9f17-3578a4a1f711",
+      "source": "85115192-68fa-413a-97ac-b67ce40a2b10",
+      "target": "dfc3799f-4794-495a-bce6-6c28f7410c40",
+      "type": "ComponentProvidedInterface",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "323e0e43-6c88-4be3-b2f7-d28e50773741",
+      "source": "dbf33528-1a26-4bee-a6ba-024947ae923a",
+      "target": "dfc3799f-4794-495a-bce6-6c28f7410c40",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "65b82b76-0f92-4df0-bdf8-798948553204",
+      "source": "5a67ddad-46bb-48e4-9329-72eb6444de0d",
+      "target": "5af9b636-99d2-4dbc-8ffd-2efee44b9f21",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "6c5e680e-53a4-41a3-8d23-b21a42d0e42e",
+      "source": "16235d63-5df2-4e27-8d9f-af034c72f6ad",
+      "target": "5af9b636-99d2-4dbc-8ffd-2efee44b9f21",
+      "type": "ComponentProvidedInterface",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "de88e371-8b83-428f-bdb7-3c7b5131e428",
+      "source": "90b94b68-f55b-42f1-b6d4-7561cf750f73",
+      "target": "029b0695-30d2-46d9-a329-b75feacb7af5",
+      "type": "ComponentProvidedInterface",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "de5d0e36-9258-4c51-ab12-eeb4b4b53e04",
+      "source": "16235d63-5df2-4e27-8d9f-af034c72f6ad",
+      "target": "90b94b68-f55b-42f1-b6d4-7561cf750f73",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "right",
+      "targetHandle": "top",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "4b05a34c-3f6b-44bd-bbc3-2812d4559ea9",
+      "source": "22e7ab16-2e2c-4cb8-b868-b7a92ebaf092",
+      "target": "dbf33528-1a26-4bee-a6ba-024947ae923a",
+      "type": "ComponentDependency",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "853a2524-480a-4e7d-888e-5c8fac0b167f",
+      "source": "22e7ab16-2e2c-4cb8-b868-b7a92ebaf092",
+      "target": "22e7ab16-2e2c-4cb8-b868-b7a92ebaf092",
+      "type": "ComponentDependency",
+      "sourceHandle": "right",
+      "targetHandle": "right-bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "98efd3e9-b50e-4e2b-ae96-ed7732fcafa4",
+      "source": "28fb698e-332d-42c1-af5e-0173191e8ad5",
+      "target": "5a67ddad-46bb-48e4-9329-72eb6444de0d",
+      "type": "ComponentDependency",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "c5d8bfd1-1bd0-4404-92a7-66b979c04af1",
+      "source": "a23438ee-3851-4ecf-985d-e346fb329f93",
+      "target": "22e7ab16-2e2c-4cb8-b868-b7a92ebaf092",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    },
+    {
+      "id": "39ace130-0a17-4f7d-9fbf-b23c60bd991d",
+      "source": "a23438ee-3851-4ecf-985d-e346fb329f93",
+      "target": "28fb698e-332d-42c1-af5e-0173191e8ad5",
+      "type": "ComponentRequiredInterface",
+      "sourceHandle": "top",
+      "targetHandle": "bottom",
+      "data": {
+        "points": []
+      }
+    }
+  ],
+  "assessments": {}
+}

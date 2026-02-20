@@ -1,5 +1,7 @@
 *.pdf
+figures/*.json
 !figures/*.pdf
 !thesis.pdf
 .idea
 .vscode
+/examples
