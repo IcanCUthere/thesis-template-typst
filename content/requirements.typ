@@ -172,7 +172,7 @@ This model separates automated issue discovery from human decision-making. It ma
 The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise is composed of one or more CodeRepositories, and each repository aggregates Files. A File contains text and a path, and it provides the context in which review Threads appear.
 
 #figure(   
-  image("../figures/ClassDiagram.pdf", width: 95%),                                    
+  image("../figures/AOM Diagram.pdf", width: 95%),                                    
   caption: [Analysis Object Model for the review system.],
 ) <AOM>
 
@@ -191,7 +191,7 @@ The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review
 For every issue, the Instructor decides whether it represents a real inconsistency. If not, the Instructor discards it and Artemis hides the comment. If it is an actual issue, the Instructor evaluates the proposed code change. When the proposed code change does not make sense, the Instructor applies a manual correction and marks the issue as resolved, which shows that the workflow still relies on human intervention when LLM suggestions fall short. When the proposed code change does make sense, the Instructor applies it through Artemis, which updates the exercise, marks the issue as resolved, creates a new exercise version, and hides the comment. The workflow loops while issues remain and ends once the Instructor resolves or discards all comments. This model highlights the human-in-the-loop control flow and the system's role in persistence across exercise versions, and it leaves room for future extensions that improve the quality of automated fixes.
 
 #figure(   
-  image("../figures/ActivityDiagram.pdf", width: 95%),                                    
+  image("../figures/Activity Diagram.pdf", width: 95%),                                    
   caption: [Activity Diagram for the review system.],
 ) <ACTDIA>
 
