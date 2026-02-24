@@ -31,7 +31,7 @@ Human-in-the-loop (HITL) review describes AI-assisted workflows that deliberatel
 
 For programming exercises, HITL is critical because small inconsistencies across the problem statement and repositories can have disproportionate impact: they can change what is assessed, introduce hidden requirements, or create confusion when tests and specification diverge. A practical HITL design must therefore make instructor verification easy. This requires precise localization (which file and where), a clear rationale for why something is considered inconsistent, and a workflow that supports explicit decisions (e.g., accept, dismiss, resolve) without silently changing exercise content.
 
-This thesis follows the HITL paradigm by turning LLM consistency findings into review threads that instructors can act on directly. The system integrates AI proposals into a familiar review workflow with persistent threads, resolution states, and safe application of suggested fixes. Instructors remain responsible for the final outcome, while the system reduces the mechanical effort of identifying, tracking, and navigating inconsistencies.
+This thesis follows the HITL paradigm by turning LLM consistency findings into review threads that instructors can act on directly. The system integrates AI proposals into a familiar review workflow with persistent threads, resolution states, and safe application of suggested code changes. Instructors remain responsible for the final outcome, while the system reduces the mechanical effort of identifying, tracking, and navigating inconsistencies.
 
 == Review Comment Systems
 #TODO[

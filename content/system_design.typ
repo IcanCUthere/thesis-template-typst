@@ -12,7 +12,7 @@ In this chapter, we map the concepts of the application domain to the solution d
   Provide a brief overview of the software architecture and references to other chapters (e.g. requirements), references to existing systems, constraints impacting the software architecture..
 ]
 
-Artemis operates as a web application with a client-server architecture. The client provides the programming exercise editor and review UI, while the server hosts the review workflow, persistence logic, and integration with Hyperion via Spring AI. Client and server communicate through REST endpoints, which keeps presentation and business logic separated and supports stable integration with existing Artemis components. The review subsystem integrates into the existing exercise and versioning infrastructure so that review comments remain linked to the correct exercise version and permissions.
+Artemis operates as a web application with a client-server architecture. The client provides the programming exercise editor and review UI, while the server hosts the review workflow, persistence logic, and integration with Hyperion via Spring AI. Client and server communicate through REST endpoints, which keeps presentation and business logic separated and supports stable integration with existing Artemis components. The review subsystem integrates into the existing infrastructure for exercises and exercise versions so that review comments remain linked to the correct exercise version and permissions.
 
 == Design Goals
 #TODO[
@@ -24,7 +24,7 @@ The design goals derive from the functional requirements, quality attributes, an
 The system must provide a low-friction review experience that aligns with common tools instructors already use. The architecture therefore prioritizes a GitHub-style comment model and a VS Code-like overview navigation, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors can interpret and act on comments quickly (QA1, FR1).
 
 #par(first-line-indent: 0pt)[*Reliability and Safe Issue Resolution*]
-All changes must remain under instructor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested fixes (QA2, FR3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
+All changes must remain under instructor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA2, FR3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
 
 #par(first-line-indent: 0pt)[*Persistence and Traceability*]
 Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors to track decisions and collaborate effectively (FR2). This goal supports auditability and reduces repeated work across iterations.
@@ -68,7 +68,7 @@ The client diagram in #ref(<SubsystemDecompClient>) separates the UI from servic
 ]
 The review workflow reuses the existing Artemis deployment and does not introduce new hardware nodes. The client runs in the browser as part of the Artemis web application, and the server runs in the existing Artemis backend environment. LLM requests go through the existing Hyperion integration via Spring AI.
 
-The implementation follows the established Artemis tech stack: Angular on the client, Spring Boot on the server, and a relational database (PostgreSQL or MySQL) for persistence. Client and server communicate through REST endpoints, and the review subsystem integrates into the existing exercise and versioning services.
+The implementation follows the established Artemis tech stack: Angular on the client, Spring Boot on the server, and a relational database (PostgreSQL or MySQL) for persistence. Client and server communicate through REST endpoints, and the review subsystem integrates into the existing services for exercises and exercise versions.
 
 == Persistent Data Management
 #TODO[
@@ -79,7 +79,7 @@ The implementation follows the established Artemis tech stack: Angular on the cl
 #TODO[
   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
 ]
-The review system restricts all review actions to instructors. Only users with instructor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested fixes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
+The review system restricts all review actions to instructors. Only users with instructor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested code changes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
 
 Access control follows existing Artemis authorization rules for programming exercises. Review threads inherit the same access scope as the exercise and its repository, so only instructors assigned to the course can access the data. Server-side endpoints in ReviewResource and ConsistencyCheckResource enforce these checks, and the client only exposes review UI elements when the user has the required role.
 
