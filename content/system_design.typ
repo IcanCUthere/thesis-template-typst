@@ -42,7 +42,15 @@ In cases of conflict, the system follows an instructor-first principle: reliabil
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
-The subsystem decomposition splits the review workflow into server and client concerns, shown in #ref(<SubsystemDecompServer>) and #ref(<SubsystemDecompClient>).
+The subsystem decomposition splits the review workflow into client and server concerns, shown in #ref(<SubsystemDecompClient>) and #ref(<SubsystemDecompServer>).
+
+#par(first-line-indent: 0pt)[*Client Side*]
+The client diagram in #ref(<SubsystemDecompClient>) separates the UI from service access. The Service Layer exposes ReviewService and ConsistencyCheckService interfaces, which the UI uses to load threads, start checks, and apply changes. The User Interface Layer contains the CodeEditorContainer, CodeEditor, and CommentOverview components. CodeEditorContainer orchestrates the editor and overview, the CodeEditor renders inline comments and applies edits, and CommentOverview supports filtering and navigation. This split keeps the UI modular and allows the review workflow to evolve without changing how the editor talks to the server.
+
+#figure(
+  image("../figures/SubDecompClient.pdf", width: 95%),
+  caption: [Subsystem decomposition of the client side.],
+) <SubsystemDecompClient>
 
 #par(first-line-indent: 0pt)[*Server Side*]
 The server diagram in #ref(<SubsystemDecompServer>) groups components into persistence, application, and web layers. The Persistence Layer contains CommentRepository and ThreadRepository. They expose DataProviderService interfaces that supply thread and comment data to the application layer. The Application Layer contains ReviewSystem, ConsistencyCheck, and ExerciseVersioning. ReviewSystem manages thread lifecycle and state changes, ConsistencyCheck orchestrates LLM requests and transforms results into review threads, and ExerciseVersioning creates new exercise versions when fixes apply. The Web Layer exposes ReviewResource and ConsistencyCheckResource, which provide REST endpoints for the client-facing services.
@@ -50,17 +58,9 @@ The server diagram in #ref(<SubsystemDecompServer>) groups components into persi
 The LLM Provider subsystem offers a PromptService that ConsistencyCheck consumes to execute checks. This separation keeps LLM access behind a dedicated interface and allows alternative providers without changing the review workflow. The dependencies in the diagram show that web resources depend on application services, application services depend on repositories and the LLM provider, and the client communicates only through the exposed service interfaces.
 
 #figure(
-  image("../figures/Subsystem Decomposition Server.pdf", width: 95%),
+  image("../figures/SubDecompServer.pdf", width: 95%),
   caption: [Subsystem decomposition of the server side.],
 ) <SubsystemDecompServer>
-
-#par(first-line-indent: 0pt)[*Client Side*]
-The client diagram in #ref(<SubsystemDecompClient>) separates the UI from service access. The Service Layer exposes ReviewService and ConsistencyCheckService interfaces, which the UI uses to load threads, start checks, and apply changes. The User Interface Layer contains the CodeEditorContainer, CodeEditor, and CommentOverview components. CodeEditorContainer orchestrates the editor and overview, the CodeEditor renders inline comments and applies edits, and CommentOverview supports filtering and navigation. This split keeps the UI modular and allows the review workflow to evolve without changing how the editor talks to the server.
-
-#figure(
-  image("../figures/Subsystem Decomposition Client.pdf", width: 95%),
-  caption: [Subsystem decomposition of the client side.],
-) <SubsystemDecompClient>
 
 == Hardware Software Mapping
 #TODO[
@@ -74,6 +74,21 @@ The implementation follows the established Artemis tech stack: Angular on the cl
 #TODO[
   Optional section that describes how data is saved over the lifetime of the system and which data. Usually this is either done by saving data in structured files or in databases. If this is applicable for the thesis, describe the approach for persisting data here and show a UML class diagram how the entity objects are mapped to persistent storage. It contains a rationale of the selected storage scheme, file system or database, a description of the selected database and database administration issues.
 ]
+
+The review workflow stores its data in Artemis's relational database so that review information remains available across sessions and across exercise versions. As shown in #ref(<DB>), the persistence model centers on three entities: ThreadGroup, CommentThread, and Comment. ThreadGroup organizes related threads within one exercise, CommentThread stores the review anchor and lifecycle state, and Comment stores the individual discussion entries and consistency-check outputs.
+
+CommentThread is linked to the corresponding ProgrammingExercise and, where needed, to an ExerciseVersion. In addition to the thread state (for example resolved and outdated), the model stores anchor metadata such as repository target, file path, line number, and initial version/commit references. This allows the system to keep review context stable even when the exercise evolves. Comments are linked to a thread and an optional author, and consistency-related comment content can carry both a human-readable fix description and an optional suggested inline code change.
+
+Over the lifetime of the system, data is written at the moment instructors create threads/comments or update thread states, and it is cleaned up according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
+
+The selected storage scheme is a pragmatic hybrid: relational structures for ownership, references, and lifecycle state, combined with structured comment payloads for extensible content types. This balances integrity and flexibility. Relational constraints and explicit mappings support reliable querying and access control, while structured payloads allow the system to evolve consistency-comment content without redesigning the schema for every new field.
+
+From an operational perspective, the subsystem reuses Artemis database infrastructure and migration process. Schema changes are managed through Liquibase changelogs, and the same model supports the existing Artemis database setups (for example MySQL and PostgreSQL profiles). For administration, this means the review data follows the same backup, migration, and monitoring workflows as the rest of the platform, with particular attention to thread/comment relations and version references.
+
+#figure(
+  image("../figures/Database.pdf", width: 95%),
+  caption: [Database Schema.],
+) <DB>
 
 == Access Control
 #TODO[
