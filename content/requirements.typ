@@ -11,13 +11,13 @@ This chapter examines the requirements for integrating AI-assisted review into A
 #TODO[
   Provide a short overview about the purpose, scope, objectives and success criteria of the system that you like to develop.
 ]
-This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review comments. Its scope covers detecting inconsistencies across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review comment system with persistence across exercise versions, provide clear inline issue presentation and navigation, and enable instructors to preview and apply suggested code changes under human control. The system is considered successful if it reduces review effort, improves transparency of inconsistencies, and is judged usable by instructors in evaluation.
+This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors and editors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review comments. Its scope covers detecting inconsistencies across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review comment system with persistence across exercise versions, provide clear inline issue presentation and navigation, and enable instructors and editors to preview and apply suggested code changes under human control. The system is considered successful if it reduces review effort, improves transparency of inconsistencies, and is judged usable by instructors and editors in evaluation.
 
 == Existing System
 #TODO[
   This section is only required if the proposed system (i.e. the system that you develop in the thesis) should replace an existing system.
 ]
-Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-driven exercise creation assistant that helps instructors create high-quality exercises more efficiently, including consistency checking. An instructor can trigger a check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected inconsistencies, including severity, categories, and suggested fix descriptions. The current interface exposes this output as raw JSON, so instructors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
+Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-driven exercise creation assistant that helps instructors and editors create high-quality exercises more efficiently, including consistency checking. An instructor or editor can trigger a check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected inconsistencies, including severity, categories, and suggested fix descriptions. The current interface exposes this output as raw JSON, so instructors and editors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
 
 The existing system does not persist consistency results. Once the page is reloaded or the exercise version changes, the detected issues are lost and the check must be rerun. There is also no review comment mechanism to track resolution status or discussion over time, which makes it difficult to maintain consistency across iterations and coordinate among multiple instructors.
 
@@ -26,7 +26,7 @@ The existing system does not persist consistency results. Once the page is reloa
   If you leave out the section “Existing system”, you can rename this section into “Requirements”.
 ]
 
-The proposed system extends Artemis with a review-centric consistency workflow that turns Hyperion's LLM findings into persistent, actionable artifacts. The system models consistency issues as review comments and stores them with the exercise and the corresponding exercise version, so instructors can track, discuss, and resolve issues over time. The system presents issues inline with clear metadata, provides overview navigation, and lets instructors preview and apply suggested code changes while keeping human control over final changes. Overall, the system aims to improve the transparency, efficiency, and reliability of exercise creation without changing the pedagogical intent of the exercises.
+The proposed system extends Artemis with a review-centric consistency workflow that turns Hyperion's LLM findings into persistent, actionable artifacts. The system models consistency issues as review comments and stores them with the exercise and the corresponding exercise version, so instructors and editors can track, discuss, and resolve issues over time. The system presents issues inline with clear metadata, provides overview navigation, and lets instructors and editors preview and apply suggested code changes while keeping human control over final changes. Overall, the system aims to improve the transparency, efficiency, and reliability of exercise creation without changing the pedagogical intent of the exercises.
 
 === Functional Requirements
 #TODO[
@@ -37,17 +37,17 @@ The proposed system extends Artemis with a review-centric consistency workflow t
   - FR3 Short Title: Short Description.
 ]
 
-This section specifies the functional requirements of the review workflow. Each requirement describes a distinct capability the system must provide to support instructors in reviewing, discussing, and resolving consistency issues within Artemis.
+This section specifies the functional requirements of the review workflow. Each requirement describes a distinct capability the system must provide to support instructors and editors in reviewing, discussing, and resolving consistency issues within Artemis.
 
 #par(first-line-indent: 0pt)[*Basic Review System Functionality*]
 
-- *FR1 Create Review Threads and User Comments:* The system shall allow instructors to create review threads anchored to a specific file and line and add user-written comments to these threads.
+- *FR1 Create Review Threads and User Comments:* The system shall allow instructors and editors to create review threads anchored to a specific file and line and add user-written comments to these threads.
 - *FR2 Persist Review Threads:* The system shall store review threads with the exercise so they remain available across sessions.
-- *FR3 Reply to Threads:* The system shall allow instructors to reply within an existing thread to continue the discussion.
-- *FR4 Edit User Comments:* The system shall allow instructors to edit the content of their user comments.
-- *FR5 Delete Comments and Threads:* The system shall allow instructors to delete individual comments and remove entire threads.
+- *FR3 Reply to Threads:* The system shall allow instructors and editors to reply within an existing thread to continue the discussion.
+- *FR4 Edit User Comments:* The system shall allow instructors and editors to edit the content of their user comments.
+- *FR5 Delete Comments and Threads:* The system shall allow instructors and editors to delete individual comments and remove entire threads.
 - *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the anchored location and provide navigation between threads.
-- *FR7 Mark Threads as Resolved:* The system shall allow instructors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
+- *FR7 Mark Threads as Resolved:* The system shall allow instructors and editors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
 - *FR8 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s anchored location has changed and mark the thread as outdated to signal that the context may no longer match.
 
 These requirements define the baseline review workflow, independent of how issues are discovered.
@@ -56,11 +56,11 @@ These requirements define the baseline review workflow, independent of how issue
 
 - *FR9 Create Review Comments from Consistency Checks:* The system shall convert Hyperion consistency check results into review comments linked to the affected file and line range.
 - *FR10 Provide Code-Change Previews:* The system shall present suggested code changes side by side with the current content to enable review before changes.
-- *FR11 Apply Suggested Code Changes:* The system shall allow instructors to apply a suggested code change and update the exercise content accordingly.
+- *FR11 Apply Suggested Code Changes:* The system shall allow instructors and editors to apply a suggested code change and update the exercise content accordingly.
 - *FR12 Validate Suggested Code Changes:* The system shall check that a suggested code change still matches the current file context before applying it.
-- *FR13 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors to jump from this list to the corresponding locations in the editor.
+- *FR13 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors and editors to jump from this list to the corresponding locations in the editor.
 
-These requirements define the consistency-check-specific workflow and ensure that instructors retain control over final changes while reducing manual edits.
+These requirements define the consistency-check-specific workflow and ensure that instructors and editors retain control over final changes while reducing manual edits.
 
 === Quality Attributes
 #TODO[
@@ -74,10 +74,10 @@ These requirements define the consistency-check-specific workflow and ensure tha
 This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by #cite(<bruegge2004object>).
 
 #par(first-line-indent: 0pt)[*QA1 Usability*]
-The system shall provide an intuitive interface that requires minimal technical expertise. The workflow shall guide instructors step by step, minimize cognitive load, and present consistent inline comments and previews that remain readable in common themes.
+The system shall provide an intuitive interface that requires minimal technical expertise. The workflow shall guide instructors and editors step by step, minimize cognitive load, and present consistent inline comments and previews that remain readable in common themes.
 
 #par(first-line-indent: 0pt)[*QA2 Reliability*]
-The system shall require instructor confirmation before applying changes. It shall handle incomplete or invalid inputs through clarifying prompts instead of failing, and it shall validate interactions with Artemis and Hyperion to maintain consistent behavior during transient failures.
+The system shall require explicit instructor or editor confirmation before applying changes. It shall handle incomplete or invalid inputs through clarifying prompts instead of failing, and it shall validate interactions with Artemis and Hyperion to maintain consistent behavior during transient failures.
 
 #par(first-line-indent: 0pt)[*QA3 Performance*]
 The system shall keep the review workflow responsive. It shall render inline comments and overviews quickly and avoid blocking interactions while it processes LLM results or loads persisted issues.
@@ -140,11 +140,11 @@ Sofia then reviews a second comment that proposes an edit in the test file. She 
 ]
 To model the review workflow, this subsection follows the structure proposed by Bruegge and Dutoit #cite(<bruegge2004object>). It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
 
-The Instructor serves as the central actor. Instructors use the review system to discuss and resolve issues in programming exercises and to incorporate LLM-based consistency feedback. All interactions occur within the Artemis programming exercise editor, where review comments provide the shared interface for collaboration and resolution.
+The primary actors are Instructor and Editor. Instructors and editors use the review system to discuss and resolve issues in programming exercises and to incorporate LLM-based consistency feedback. All interactions occur within the Artemis programming exercise editor, where review comments provide the shared interface for collaboration and resolution.
 
 #par(first-line-indent: 0pt)[*Basic Review Collaboration Use Cases*]
 
-The first diagram models the core review mechanisms without consistency checks. Two instructors can start and reply to threads, edit or delete comments, and mark threads as resolved. The model emphasizes peer discussion and coordination on issues that instructors identify manually. It also shows that both instructors can participate in the same thread lifecycle, which supports shared ownership and accountability during exercise preparation.
+The first diagram models the core review mechanisms without consistency checks. Two users (for example, an instructor and an editor) can start and reply to threads, edit or delete comments, and mark threads as resolved. The model emphasizes peer discussion and coordination on issues that instructors and editors identify manually. It also shows that both actors can participate in the same thread lifecycle, which supports shared ownership and accountability during exercise preparation.
 
 This model highlights the review system as a collaboration layer within Artemis rather than a separate tool. By focusing on thread creation, replies, edits, deletions, and resolution, the diagram captures the minimal set of interactions needed to coordinate review work and document rationale over time.
 
@@ -157,7 +157,7 @@ This model highlights the review system as a collaboration layer within Artemis 
 
 The second diagram focuses on review workflows that start with a consistency check. The Instructor runs a check, filters and jumps to threads, and applies code changes. The check includes the creation of review threads so detected issues enter the same review process. Applying a code change extends the resolution flow because the system can mark the thread as resolved after the change.
 
-This model separates automated issue discovery from human decision-making. It makes clear that the system uses consistency checks to populate review threads, while instructors retain control over navigation, fixes, and resolution. The separation between check initiation, thread navigation, and code changes keeps the workflow transparent and aligns the automated assistance with established review practices.
+This model separates automated issue discovery from human decision-making. It makes clear that the system uses consistency checks to populate review threads, while instructors and editors retain control over navigation, fixes, and resolution. The separation between check initiation, thread navigation, and code changes keeps the workflow transparent and aligns the automated assistance with established review practices.
 
 #figure(   
   image("../figures/UseCaseConsistency.pdf", width: 70%),                                    
@@ -178,9 +178,9 @@ The analysis object model in #ref(<AOM>) describes the core domain concepts of t
 
 A Thread captures a discussion at a specific location in a file. It stores its resolution state and the locationInFile, and it offers operations to create and manage comments. Threads can also group with other threads to represent related issues across the same exercise. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
 
-Comment acts as an abstract superclass with a shared author attribute that can reference either an instructor or an LLM agent as author, and it enables additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents instructor-written discussion and supports editing, while ConsistencyComment represents LLM-generated findings and carries severity, category, and codeFix information with an applyFix action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
+Comment acts as an abstract superclass with a shared author attribute that can reference an instructor, an editor, or an LLM agent as author, and it enables additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents instructor- or editor-written discussion and supports editing, while ConsistencyComment represents LLM-generated findings and carries severity, category, and codeFix information with an applyFix action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
 
-The model focuses on domain concepts that instructors reason about during review: exercises, files, threads, and comment types. It separates comment content and issue metadata from file context and thread state, which clarifies ownership and supports persistence across exercise versions. This structure keeps the review workflow consistent whether issues originate from manual discussion or from consistency checks.
+The model focuses on domain concepts that instructors and editors reason about during review: exercises, files, threads, and comment types. It separates comment content and issue metadata from file context and thread state, which clarifies ownership and supports persistence across exercise versions. This structure keeps the review workflow consistent whether issues originate from manual discussion or from consistency checks.
 
 === Dynamic Model
 #TODO[
@@ -199,14 +199,14 @@ For every issue, the Instructor decides whether it represents a real inconsisten
 #TODO[
   Show mockups of the user interface of the software you develop and their connections / transitions. You can also create a storyboard. *Important:* Describe the mockups and their rationale in the text.
 ]
-The user interface aims for familiarity to reduce onboarding effort. The review comments follow patterns from GitHub-style code review, as shown in #ref(<UIGitHub>), so instructors can recognize threads, replies, and resolution states without learning a new interaction model.
+The user interface aims for familiarity to reduce onboarding effort. The review comments follow patterns from GitHub-style code review, as shown in #ref(<UIGitHub>), so instructors and editors can recognize threads, replies, and resolution states without learning a new interaction model.
 
 #figure(
   image("../figures/UI Mockups/GitHub.png", width: 70%),
   caption: [GitHub comment example.],
 ) <UIGitHub>
 
-For the overview UI, the editor needed a dedicated space to list and filter comments. Refactoring the layout to a VS Code-like structure with a left-side tab view, shown in #ref(<UIOverview>), provided a familiar navigation area while keeping the editor visible. This choice balances screen space and discoverability and keeps the review workflow consistent with tools instructors already use.
+For the overview UI, the editor needed a dedicated space to list and filter comments. Refactoring the layout to a VS Code-like structure with a left-side tab view, shown in #ref(<UIOverview>), provided a familiar navigation area while keeping the editor visible. This choice balances screen space and discoverability and keeps the review workflow consistent with tools instructors and editors already use.
 
 #figure(
   image("../figures/UI Mockups/One-Sided Comments.png", width: 95%),

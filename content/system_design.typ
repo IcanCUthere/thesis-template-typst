@@ -21,22 +21,22 @@ Artemis operates as a web application with a client-server architecture. The cli
 The design goals derive from the functional requirements, quality attributes, and constraints defined in Chapter 4. Following Bruegge and Dutoit’s guidance on prioritizing conflicting objectives #cite(<bruegge2004object>), the goals below describe the primary forces that shape the architecture and the trade-offs between them.
 
 #par(first-line-indent: 0pt)[*Usability and Familiar Review Interaction*]
-The system must provide a low-friction review experience that aligns with common tools instructors already use. The architecture therefore prioritizes a GitHub-style comment model and a VS Code-like overview navigation, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors can interpret and act on comments quickly (QA1, FR1).
+The system must provide a low-friction review experience that aligns with common tools instructors and editors already use. The architecture therefore prioritizes a GitHub-style comment model and a VS Code-like overview navigation, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors and editors can interpret and act on comments quickly (QA1, FR1).
 
 #par(first-line-indent: 0pt)[*Reliability and Safe Issue Resolution*]
-All changes must remain under instructor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA2, FR3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
+All changes must remain under instructor and editor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA2, FR3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
 
 #par(first-line-indent: 0pt)[*Persistence and Traceability*]
-Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors to track decisions and collaborate effectively (FR2). This goal supports auditability and reduces repeated work across iterations.
+Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors and editors to track decisions and collaborate effectively (FR2). This goal supports auditability and reduces repeated work across iterations.
 
 #par(first-line-indent: 0pt)[*Performance and Responsiveness*]
-The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors can continue working while data loads (QA3). Performance is important, but it does not outweigh correctness and usability.
+The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors and editors can continue working while data loads (QA3). Performance is important, but it does not outweigh correctness and usability.
 
 #par(first-line-indent: 0pt)[*Modularity and Extensibility*]
 The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA4). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
 
 #par(first-line-indent: 0pt)[*Prioritization and Trade-offs*]
-In cases of conflict, the system follows an instructor-first principle: reliability and correctness take precedence over speed, and clarity of review comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with human-in-the-loop requirements.
+In cases of conflict, the system follows an instructor/editor-first principle: reliability and correctness take precedence over speed, and clarity of review comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with human-in-the-loop requirements.
 
 == Subsystem Decomposition
 #TODO[
@@ -79,7 +79,7 @@ The review workflow stores its data in Artemis's relational database so that rev
 
 CommentThread is linked to the corresponding ProgrammingExercise and, where needed, to an ExerciseVersion. In addition to the thread state (for example resolved and outdated), the model stores anchor metadata such as repository target, file path, line number, and initial version/commit references. This allows the system to keep review context stable even when the exercise evolves. Comments are linked to a thread and an optional author, and consistency-related comment content can carry both a human-readable fix description and an optional suggested inline code change.
 
-Over the lifetime of the system, data is written at the moment instructors create threads/comments or update thread states, and it is cleaned up according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
+Over the lifetime of the system, data is written at the moment instructors or editors create threads/comments or update thread states, and it is cleaned up according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
 
 The selected storage scheme is a pragmatic hybrid: relational structures for ownership, references, and lifecycle state, combined with structured comment payloads for extensible content types. This balances integrity and flexibility. Relational constraints and explicit mappings support reliable querying and access control, while structured payloads allow the system to evolve consistency-comment content without redesigning the schema for every new field.
 
@@ -94,14 +94,39 @@ From an operational perspective, the subsystem reuses Artemis database infrastru
 #TODO[
   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
 ]
-The review system restricts all review actions to instructors. Only users with instructor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested code changes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
+The review system restricts all review actions to instructors and editors. Only users with instructor or editor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested code changes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
 
-Access control follows existing Artemis authorization rules for programming exercises. Review threads inherit the same access scope as the exercise and its repository, so only instructors assigned to the course can access the data. Server-side endpoints in ReviewResource and ConsistencyCheckResource enforce these checks, and the client only exposes review UI elements when the user has the required role.
+Access control follows existing Artemis authorization rules for programming exercises. Review threads inherit the same access scope as the exercise and its repository, so only instructors and editors assigned to the exercise can access the data. Server-side endpoints in ReviewResource and ConsistencyCheckResource enforce these checks, and the client only exposes review UI elements when the user has the required role. #ref(<AccessRightsMatrix>) summarizes the role-based access rights for the core review and consistency check functions.
+
+#figure(
+  table(
+    columns: (2fr, 1fr, 1fr, 1fr, 1fr),
+    inset: 6pt,
+    align: (left, center, center, center, center),
+    [*Functionality*], [*Admin*], [*Instructor*], [*Editor*], [*Student*],
+    [Create review thread], [✓], [✓], [✓], [✗],
+    [List review threads], [✓], [✓], [✓], [✗],
+    [Create thread group], [✓], [✓], [✓], [✗],
+    [Delete thread group], [✓], [✓], [✓], [✗],
+    [Add comment to thread], [✓], [✓], [✓], [✗],
+    [Delete comment], [✓], [✓], [✓], [✗],
+    [Mark thread resolved], [✓], [✓], [✓], [✗],
+    [Edit comment], [✓], [✓], [✓], [✗],
+    [Run consistency check], [✓], [✓], [✓], [✗],
+  ),
+  caption: [Access rights for review and consistency-check functions.],
+) <AccessRightsMatrix>
 
 == Global Software Control
 #TODO[
   Optional section describing the control flow of the system, in particular, whether a monolithic, event-driven control flow or concurrent processes have been selected, how requests are initiated and specific synchronization issues
 ]
+
+Artemis uses a hybrid control model for the review workflow. User actions are handled through a main REST request/response path and persisted as the authoritative state in the database, while a parallel WebSocket live-update path distributes changes to other open clients. This separation keeps write operations reliable and still supports low-latency collaboration.
+
+The runtime processes requests and live notifications concurrently. This is important because multiple users can review the same exercise at the same time, and the system must remain responsive for all active clients.
+
+To keep shared state stable, the client synchronization logic handles delayed or repeated updates safely. Temporary differences between open views are resolved without corrupting state, so the workflow remains eventually consistent during concurrent work.
 
 /*
 == Boundry Conditions
