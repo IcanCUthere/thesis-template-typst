@@ -41,24 +41,27 @@ This section specifies the functional requirements of the review workflow. Each 
 
 #par(first-line-indent: 0pt)[*Basic Review System Functionality*]
 
-- *FR1 Create Review Threads and User Comments:* The system shall allow instructors and editors to create review threads anchored to a specific file and line and add user-written comments to these threads.
+- *FR1 Create Review Threads and User Comments:* The system shall allow instructors and editors to create review threads for a specific file and line number and add user-written comments to these threads.
 - *FR2 Persist Review Threads:* The system shall store review threads with the exercise so they remain available across sessions.
 - *FR3 Reply to Threads:* The system shall allow instructors and editors to reply within an existing thread to continue the discussion.
 - *FR4 Edit User Comments:* The system shall allow instructors and editors to edit the content of their user comments.
 - *FR5 Delete Comments and Threads:* The system shall allow instructors and editors to delete individual comments and remove entire threads.
-- *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the anchored location and provide navigation between threads.
-- *FR7 Mark Threads as Resolved:* The system shall allow instructors and editors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
-- *FR8 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s anchored location has changed and mark the thread as outdated to signal that the context may no longer match.
+- *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the referenced line location and provide navigation between threads.
+- *FR7 Hide Review Threads in the Editor:* The system shall allow instructors and editors to hide review threads in the editor view to reduce visual obstruction while editing code.
+- *FR8 Mark Threads as Resolved:* The system shall allow instructors and editors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
+- *FR9 Update Thread Line References for New Exercise Versions:* The system shall update thread line references when a new exercise version is created so existing threads remain linked to the correct locations in the updated files.
+- *FR10 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s referenced line location has changed and mark the thread as outdated to signal that the context may no longer match.
+- *FR11 Propagate Review Updates to Active Clients:* The system shall propagate thread and comment updates to other active clients that are working on the same exercise.
 
 These requirements define the baseline review workflow, independent of how issues are discovered.
 
 #par(first-line-indent: 0pt)[*Specific Consistency Issue Functionality*]
 
-- *FR9 Create Review Comments from Consistency Checks:* The system shall convert Hyperion consistency check results into review comments linked to the affected file and line range.
-- *FR10 Provide Code-Change Previews:* The system shall present suggested code changes side by side with the current content to enable review before changes.
-- *FR11 Apply Suggested Code Changes:* The system shall allow instructors and editors to apply a suggested code change and update the exercise content accordingly.
-- *FR12 Validate Suggested Code Changes:* The system shall check that a suggested code change still matches the current file context before applying it.
-- *FR13 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors and editors to jump from this list to the corresponding locations in the editor.
+- *FR12 Create Review Comments from Consistency Checks:* The system shall convert Hyperion consistency check results into review comments linked to the affected file and line range.
+- *FR13 Provide Code-Change Previews:* The system shall present suggested code changes side by side with the current content to enable review before changes.
+- *FR14 Apply Suggested Code Changes:* The system shall allow instructors and editors to apply a suggested code change and update the exercise content accordingly.
+- *FR15 Validate Suggested Code Changes:* The system shall check that a suggested code change still matches the current file context before applying it.
+- *FR16 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors and editors to jump from this list to the corresponding locations in the editor.
 
 These requirements define the consistency-check-specific workflow and ensure that instructors and editors retain control over final changes while reducing manual edits.
 
@@ -74,16 +77,16 @@ These requirements define the consistency-check-specific workflow and ensure tha
 This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by #cite(<bruegge2004object>).
 
 #par(first-line-indent: 0pt)[*QA1 Usability*]
-The system shall provide an intuitive interface that requires minimal technical expertise. The workflow shall guide instructors and editors step by step, minimize cognitive load, and present consistent inline comments and previews that remain readable in common themes.
+The system shall keep inline review support unobtrusive during code editing. Review threads should not unnecessarily block code content, and users should be able to reduce their visual footprint while editing. At the same time, the interface shall make thread location and thread state immediately recognizable, for example through consistent visual indicators and labels for states such as open, resolved, and outdated.
 
 #par(first-line-indent: 0pt)[*QA2 Reliability*]
-The system shall require explicit instructor or editor confirmation before applying changes. It shall handle incomplete or invalid inputs through clarifying prompts instead of failing, and it shall validate interactions with Artemis and Hyperion to maintain consistent behavior during transient failures.
+The system shall preserve a reliable and safe review state under normal and failure conditions. Suggested code changes may only be applied after explicit confirmation and successful context validation; otherwise, the operation shall be rejected without modifying exercise content. Thread and comment state shall remain consistent across persistence, reloads, and exercise-version updates, and concurrent updates from multiple active clients shall converge to a consistent result. Failures in checking, applying, or synchronizing changes shall be surfaced with clear, actionable feedback.
 
 #par(first-line-indent: 0pt)[*QA3 Performance*]
-The system shall keep the review workflow responsive. It shall render inline comments and overviews quickly and avoid blocking interactions while it processes LLM results or loads persisted issues.
+The system shall keep the review workflow responsive during normal editing. Typing, scrolling, cursor movement, thread expand/collapse, and issue navigation shall not be blocked by consistency checks or synchronization updates. Long-running operations (for example consistency checks) shall execute asynchronously, and UI updates shall be applied incrementally instead of full reloads. Under typical exercise size and thread volume, interactive review actions should return quickly and keep the editor usable at all times.
 
 #par(first-line-indent: 0pt)[*QA4 Supportability and Integration*]
-The system shall remain modular and align with existing Artemis integration conventions. It shall expose clear interfaces for future extensions and remain compatible with existing deployment environments with minimal reconfiguration.
+The system shall keep the core review model extensible so that new AI-generated comment types can be introduced without redesigning the thread workflow, storage model, or editor interaction. Integration with existing Artemis workflows (for example authorization, exercise versioning, and editor behavior) shall remain stable when such extensions are added. Comment-type-specific logic shall be isolated from the shared thread lifecycle to support incremental evolution with minimal reconfiguration.
 
 === Constraints
 
@@ -95,6 +98,11 @@ The system shall remain modular and align with existing Artemis integration conv
   - C3 Category: Short Description.
 
 ]
+
+- *C1 Platform Constraint:* The solution shall be implemented within the existing Artemis client-server architecture and codebase.
+- *C2 Role Constraint:* Review functionality shall be restricted to authorized teaching roles (editor level and above).
+- *C3 Persistence and Compatibility Constraint:* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.
+- *C4 Prompt Data Minimization Constraint:* LLM prompts shall include only the data required for the specific consistency check, and prompt payloads shall be kept as short as possible to reduce token usage while preserving sufficient context for reliable results.
 
 == System Models
 #TODO[
@@ -144,20 +152,20 @@ The primary actors are Instructor and Editor. Instructors and editors use the re
 
 #par(first-line-indent: 0pt)[*Basic Review Collaboration Use Cases*]
 
-The first diagram models the core review mechanisms without consistency checks. Two users (for example, an instructor and an editor) can start and reply to threads, edit or delete comments, and mark threads as resolved. The model emphasizes peer discussion and coordination on issues that instructors and editors identify manually. It also shows that both actors can participate in the same thread lifecycle, which supports shared ownership and accountability during exercise preparation.
+The first diagram models the core review mechanisms without consistency checks as six main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, toggling a thread as resolved, and submitting changes. The model captures the key dependencies between these paths: starting a thread includes creating the initial comment, deleting a comment extends deleting a thread, and toggling a thread as resolved includes hiding the thread from active review views.
 
-This model highlights the review system as a collaboration layer within Artemis rather than a separate tool. By focusing on thread creation, replies, edits, deletions, and resolution, the diagram captures the minimal set of interactions needed to coordinate review work and document rationale over time.
+It also links review actions to exercise evolution. Submitting changes includes creating a new exercise version, and that versioning step extends the update of thread line numbers and the marking of threads as outdated where context no longer matches. This structure keeps the basic review flow compact while making explicit how collaborative editing decisions propagate into version history and thread state management.
 
 #figure(   
-  image("../figures/UseCaseBasic.pdf", width: 70%),                                    
+  image("../figures/UseCaseDefault.pdf", width: 95%),                                    
   caption: [Use case diagram for basic, collaborative reviewing.],
 )
 
 #par(first-line-indent: 0pt)[*Consistency Check Review Use Cases*]
 
-The second diagram focuses on review workflows that start with a consistency check. The Instructor runs a check, filters and jumps to threads, and applies code changes. The check includes the creation of review threads so detected issues enter the same review process. Applying a code change extends the resolution flow because the system can mark the thread as resolved after the change.
+The second diagram structures the consistency workflow around two main use cases: checking consistency and jumping to an issue. Checking consistency includes storing detected issues as review threads, and storing issues includes creating a thread group so generated threads are organized consistently. The jump-to-issue path is connected to applying code changes through an extend relation, and applying a code change includes toggling the related thread as resolved.
 
-This model separates automated issue discovery from human decision-making. It makes clear that the system uses consistency checks to populate review threads, while instructors and editors retain control over navigation, fixes, and resolution. The separation between check initiation, thread navigation, and code changes keeps the workflow transparent and aligns the automated assistance with established review practices.
+This model separates automated issue generation from follow-up actions on individual issues. The include relations capture the mandatory system behavior during check execution (issue persistence and grouping), while the extend relation captures optional fix application during navigation. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
 
 #figure(   
   image("../figures/UseCaseConsistency.pdf", width: 70%),                                    
@@ -199,16 +207,20 @@ For every issue, the Instructor decides whether it represents a real inconsisten
 #TODO[
   Show mockups of the user interface of the software you develop and their connections / transitions. You can also create a storyboard. *Important:* Describe the mockups and their rationale in the text.
 ]
-The user interface aims for familiarity to reduce onboarding effort. The review comments follow patterns from GitHub-style code review, as shown in #ref(<UIGitHub>), so instructors and editors can recognize threads, replies, and resolution states without learning a new interaction model.
+The user interface aims for familiarity to reduce onboarding effort. The thread design in #ref(<UICommentThread>) uses a review pattern that is common across modern code and document review tools, without relying on a platform-specific layout. Comments are shown as a linear history within one thread so that discussion context stays visible from top to bottom.
+
+Each comment provides a compact three-dot menu for comment-level actions such as editing and deleting. At the bottom of the thread, a reply input bar supports quick follow-up messages, and the action row below it provides explicit Reply and Resolve controls. This combination keeps the interaction flow clear: discuss first, then either continue the thread or close it.
 
 #figure(
-  image("../figures/UI Mockups/GitHub.png", width: 70%),
-  caption: [GitHub comment example.],
-) <UIGitHub>
+  image("../figures/Comment Mockup.pdf", width: 80%),
+  caption: [Mockup of the comment-thread interaction.],
+) <UICommentThread>
 
-For the overview UI, the editor needed a dedicated space to list and filter comments. Refactoring the layout to a VS Code-like structure with a left-side tab view, shown in #ref(<UIOverview>), provided a familiar navigation area while keeping the editor visible. This choice balances screen space and discoverability and keeps the review workflow consistent with tools instructors and editors already use.
+For the overview UI, the editor needed a dedicated space to list and filter comments. The mockup in #ref(<UIOverview>) builds on the existing Artemis editor layout, which previously used two sidebars (left and right). In the revised layout, the right sidebar is removed and the left sidebar is transformed into a tab view. This keeps interaction patterns familiar from common editor interfaces, but is not tied to one specific tool.
+
+The tab-based sidebar improves extensibility because additional views can be added as new tabs instead of introducing more fixed sidebars. At the same time, removing the right sidebar increases the space available for the main editor, which improves readability during review and code editing.
 
 #figure(
-  image("../figures/UI Mockups/One-Sided Comments.png", width: 95%),
+  image("../figures/UI Mockups/One-Sided Comments.png", width: 100%),
   caption: [Mockup of the overview UI to navigate between comments.],
 ) <UIOverview>
