@@ -45,7 +45,9 @@ In cases of conflict, the system follows an instructor/editor-first principle: r
 The subsystem decomposition splits the review workflow into client and server concerns, shown in #ref(<SubsystemDecompClient>) and #ref(<SubsystemDecompServer>).
 
 #par(first-line-indent: 0pt)[*Client Side*]
-The client diagram in #ref(<SubsystemDecompClient>) separates the UI from service access. The Service Layer exposes ReviewService and ConsistencyCheckService interfaces, which the UI uses to load threads, start checks, and apply changes. The User Interface Layer contains the CodeEditorContainer, CodeEditor, and CommentOverview components. CodeEditorContainer orchestrates the editor and overview, the CodeEditor renders inline comments and applies edits, and CommentOverview supports filtering and navigation. This split keeps the UI modular and allows the review workflow to evolve without changing how the editor talks to the server.
+The client diagram in #ref(<SubsystemDecompClient>) separates the presentation layer from the data layer. The presentation layer contains the EditorContainer component. It uses the ReviewDataService and StartCheckService interfaces to access functionality in the data layer.
+
+The data layer contains the ReviewService, ExerciseEditorSyncService, and ConsistencyCheckService components. ReviewService provides access to stored review data, ConsistencyCheckService handles starting consistency checks, and ExerciseEditorSyncService supports live editor synchronization. These services connect to the Artemis Server through the StoreAndFetchService, LiveUpdateService, and ConsistencyCheckService interfaces. This split keeps the client modular and separates UI concerns from service access to the server.
 
 #figure(
   image("../figures/SubDecompClient.pdf", width: 95%),
@@ -53,9 +55,9 @@ The client diagram in #ref(<SubsystemDecompClient>) separates the UI from servic
 ) <SubsystemDecompClient>
 
 #par(first-line-indent: 0pt)[*Server Side*]
-The server diagram in #ref(<SubsystemDecompServer>) groups components into persistence, application, and web layers. The Persistence Layer contains CommentRepository and ThreadRepository. They expose DataProviderService interfaces that supply thread and comment data to the application layer. The Application Layer contains ReviewSystem, ConsistencyCheck, and ExerciseVersioning. ReviewSystem manages thread lifecycle and state changes, ConsistencyCheck orchestrates LLM requests and transforms results into review threads, and ExerciseVersioning creates new exercise versions when fixes apply. The Web Layer exposes ReviewResource and ConsistencyCheckResource, which provide REST endpoints for the client-facing services.
+The server diagram in #ref(<SubsystemDecompServer>) groups components into persistence, application, and web layers. The Persistence Layer contains CommentRepository, ThreadRepository, and ThreadGroupRepository. They expose CommentDataService, ThreadDataService, and ThreadGroupDataService interfaces, and connect to the Database through the DataProviderService interface. The App Layer contains ExerciseSynchronizer, ExerciseReview, ExerciseVersioning, and Hyperion. ExerciseSynchronizer handles exercise data synchronization, ExerciseReview manages review data and state changes, ExerciseVersioning supports exercise version creation, and Hyperion handles consistency checks. The Web Layer contains Websocket, ReviewResource, and ConsistencyCheckResource, which provide the client-facing service interfaces.
 
-The LLM Provider subsystem offers a PromptService that ConsistencyCheck consumes to execute checks. This separation keeps LLM access behind a dedicated interface and allows alternative providers without changing the review workflow. The dependencies in the diagram show that web resources depend on application services, application services depend on repositories and the LLM provider, and the client communicates only through the exposed service interfaces.
+The LLM Provider subsystem offers a PromptService that Hyperion consumes. This separation keeps LLM access behind a dedicated interface and allows the consistency-check workflow to remain isolated from the provider implementation. The dependencies in the diagram show that web components depend on app-layer services, app-layer components depend on persistence services and the LLM provider, and the client communicates only through the exposed service interfaces.
 
 #figure(
   image("../figures/SubDecompServer.pdf", width: 95%),

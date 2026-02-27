@@ -131,9 +131,9 @@ Kai, an instructor for Software Architecture, wants to expand an exercise with a
 
 #par(first-line-indent: 0pt)[*Demo Scenario 1 - Collaborative Review without Consistency Check*]
 
-Lea and Omar, two instructors for Software Engineering, review a new programming exercise before the semester starts. Lea spots an ambiguous requirement in the problem statement and adds a review comment at the exact line, proposing clearer wording and a concrete example. Omar opens the comment thread, asks for a minor adjustment, and adds a follow-up suggestion that aligns the wording with the template variables. Lea accepts the suggestion, updates the text, and marks the comment as resolved. The system keeps the resolved thread attached to the exercise version so both instructors can revisit the rationale later.
+Lea and Omar, two instructors for Software Engineering, review a new programming exercise before the semester starts. Lea spots an ambiguous requirement in the problem statement and adds a review comment at the exact line, proposing clearer wording and a concrete example. Omar opens the comment thread, asks for a minor adjustment, and adds a follow-up suggestion that aligns the wording with the template variables. Lea agrees with this suggestion, updates the text, and marks the comment as resolved.
 
-During the same review, Omar notices that the expected input format appears in the template but not in the tests. He adds a second comment, links it to the missing test case, and assigns it to himself. After adding the test, he updates the comment state to resolved, and Lea sees the status change immediately. This interaction demonstrates how instructors use the review system to coordinate improvements without running a consistency check.
+During the same review, Omar notices that the expected input format appears in the template but not in the tests. He adds a second comment. After adding the test, he updates the comment state to resolved, and Lea sees the status change immediately. This interaction demonstrates how instructors use the review system to coordinate improvements without running a consistency check.
 
 #par(first-line-indent: 0pt)[*Demo Scenario 2 - Review with Consistency Check and Applied Fixes*]
 
@@ -168,7 +168,7 @@ The second diagram structures the consistency workflow around two main use cases
 This model separates automated issue generation from follow-up actions on individual issues. The include relations capture the mandatory system behavior during check execution (issue persistence and grouping), while the extend relation captures optional fix application during navigation. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
 
 #figure(   
-  image("../figures/UseCaseConsistency.pdf", width: 70%),                                    
+  image("../figures/UseCaseConsistency.pdf", width: 95%),                                    
   caption: [Use case diagram the review process with consistency checks.],
 )
 
@@ -177,26 +177,30 @@ This model separates automated issue generation from follow-up actions on indivi
   This subsection should contain a UML Class Diagram showing the most important objects, attributes, methods and relations of your application domain including taxonomies using specification inheritance (see #cite(<bruegge2004object>)). Do not insert objects, attributes or methods of the solution domain. *Important:* Make sure to describe the analysis object model thoroughly in the text so that readers are able to understand the diagram. Also write about the rationale how and why you modeled the concepts like this.
 
 ]
-The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise is composed of one or more CodeRepositories, and each repository aggregates Files. A File contains text and a path, and it provides the context in which review Threads appear.
+
+
+The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise is composed of one ProblemStatement and three or more ExerciseRepositories, and each repository aggregates Files. A File contains text and a path, and together with the ProblemStatement it provides the context in which review Threads are shown.
 
 #figure(   
   image("../figures/AOM Diagram.pdf", width: 95%),                                    
   caption: [Analysis Object Model for the review system.],
 ) <AOM>
 
-A Thread captures a discussion at a specific location in a file. It stores its resolution state and the locationInFile, and it offers operations to create and manage comments. Threads can also group with other threads to represent related issues across the same exercise. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
+A Thread captures a discussion at a specific line. It stores its resolution state, outdated state, and lineNumber, and it offers operations to add and manage comments. Both Files and the ProblemStatement can show multiple Threads. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
 
-Comment acts as an abstract superclass with a shared author attribute that can reference an instructor, an editor, or an LLM agent as author, and it enables additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents instructor- or editor-written discussion and supports editing, while ConsistencyComment represents LLM-generated findings and carries severity, category, and codeFix information with an applyFix action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
+Comment acts as an abstract superclass with a shared text attribute and allows additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents user-written discussion and stores an author, while ConsistencyComment represents consistency findings and carries severity, category, and codeReplacement information with an applyReplacement action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
 
-The model focuses on domain concepts that instructors and editors reason about during review: exercises, files, threads, and comment types. It separates comment content and issue metadata from file context and thread state, which clarifies ownership and supports persistence across exercise versions. This structure keeps the review workflow consistent whether issues originate from manual discussion or from consistency checks.
+The model focuses on domain concepts that users reason about during review: exercises, the problem statement, repositories, files, threads, and comment types. It separates comment text and issue metadata from file context and thread state, which clarifies ownership. This structure keeps the review workflow consistent whether issues originate from manual discussion or from consistency checks.
 
 === Dynamic Model
 #TODO[
   This subsection should contain dynamic UML diagrams. These can be a UML state diagrams, UML communication diagrams or UML activity diagrams.*Important:* Make sure to describe the diagram and its rationale in the text. *Do not use UML sequence diagrams.*
 ]
-The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review workflow across the Instructor, Artemis, and the LLM Service. The process starts when the Instructor triggers a consistency check, Artemis forwards the request to the LLM Service, and the LLM returns either no inconsistencies or a list of issues. The model explicitly accounts for false positives, so the Instructor can discard issues that are not valid. When Artemis receives issues, it stores them and displays them as inline comments so the Instructor can jump to each one.
+The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review workflow across the Instructor, Artemis, and Hyperion. The process starts when the Instructor clicks “Check Consistency”, Artemis forwards the request to Hyperion, and Hyperion either finds no inconsistencies or returns consistency issues. When Artemis receives issues, it stores them as review comments and shows them inline so the Instructor can jump to each one.
 
-For every issue, the Instructor decides whether it represents a real inconsistency. If not, the Instructor discards it and Artemis hides the comment. If it is an actual issue, the Instructor evaluates the proposed code change. When the proposed code change does not make sense, the Instructor applies a manual correction and marks the issue as resolved, which shows that the workflow still relies on human intervention when LLM suggestions fall short. When the proposed code change does make sense, the Instructor applies it through Artemis, which updates the exercise, marks the issue as resolved, creates a new exercise version, and hides the comment. The workflow loops while issues remain and ends once the Instructor resolves or discards all comments. This model highlights the human-in-the-loop control flow and the system's role in persistence across exercise versions, and it leaves room for future extensions that improve the quality of automated fixes.
+For every issue, the Instructor first jumps to it and then decides whether the suggested code-fix makes sense. When it does not make sense, the Instructor changes the code manually. When it does make sense, the Instructor presses “Apply”, and Artemis applies the changes to the exercise. In both cases, the Instructor then presses “Resolve”, after which Artemis stores the resolved state and hides the comment.
+
+After resolving an issue, the Instructor presses “Submit”, and Artemis saves the exercise and creates a new exercise version. The workflow then checks whether more issues are unresolved. If so, it loops back to the next issue; otherwise, it ends. This model highlights the human-in-the-loop control flow and the system’s role in storing review comments, resolution state, and exercise versions across the review process.
 
 #figure(   
   image("../figures/Activity Diagram.pdf", width: 95%),                                    
