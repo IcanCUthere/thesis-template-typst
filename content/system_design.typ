@@ -42,12 +42,12 @@ In cases of conflict, the system follows an instructor/editor-first principle: r
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
-The subsystem decomposition splits the review workflow into client and server concerns, shown in #ref(<SubsystemDecompClient>) and #ref(<SubsystemDecompServer>).
+The subsystem decomposition in #ref(<SubsystemDecompClient>) and #ref(<SubsystemDecompServer>) is driven by two architectural priorities: keeping the editor interaction responsive for instructors and editors, and isolating persistence and AI-assisted processing so each concern can evolve independently.
 
 #par(first-line-indent: 0pt)[*Client Side*]
-The client diagram in #ref(<SubsystemDecompClient>) separates the presentation layer from the data layer. The presentation layer contains the EditorContainer component. It uses the ReviewDataService and StartCheckService interfaces to access functionality in the data layer.
+The client diagram in #ref(<SubsystemDecompClient>) separates presentation concerns from data and synchronization concerns. This separation is intentional: the editor UI must remain focused on interaction (editing, navigation, thread visualization), while data access and synchronization logic must handle server communication, retries, and state updates. Keeping these responsibilities separate reduces UI coupling and makes the editor behavior easier to test and evolve.
 
-The data layer contains the ReviewService, ExerciseEditorSyncService, and ConsistencyCheckService components. ReviewService provides access to stored review data, ConsistencyCheckService handles starting consistency checks, and ExerciseEditorSyncService supports live editor synchronization. These services connect to the Artemis Server through the StoreAndFetchService, LiveUpdateService, and ConsistencyCheckService interfaces. This split keeps the client modular and separates UI concerns from service access to the server.
+Within the data layer, ReviewService, ExerciseEditorSyncService, and ConsistencyCheckService are split because they operate with different interaction patterns and failure modes. ReviewService covers regular read/write operations on persisted review state, ExerciseEditorSyncService handles live propagation across active clients, and ConsistencyCheckService handles longer-running AI-assisted checks. Isolating these flows avoids one concern (for example delayed check responses) degrading others (for example local editor responsiveness), which directly supports usability and reliability goals.
 
 #figure(
   image("../figures/SubDecompClient.pdf", width: 95%),
@@ -55,9 +55,11 @@ The data layer contains the ReviewService, ExerciseEditorSyncService, and Consis
 ) <SubsystemDecompClient>
 
 #par(first-line-indent: 0pt)[*Server Side*]
-The server diagram in #ref(<SubsystemDecompServer>) groups components into persistence, application, and web layers. The Persistence Layer contains CommentRepository, ThreadRepository, and ThreadGroupRepository. They expose CommentDataService, ThreadDataService, and ThreadGroupDataService interfaces, and connect to the Database through the DataProviderService interface. The App Layer contains ExerciseSynchronizer, ExerciseReview, ExerciseVersioning, and Hyperion. ExerciseSynchronizer handles exercise data synchronization, ExerciseReview manages review data and state changes, ExerciseVersioning supports exercise version creation, and Hyperion handles consistency checks. The Web Layer contains Websocket, ReviewResource, and ConsistencyCheckResource, which provide the client-facing service interfaces.
+The server diagram in #ref(<SubsystemDecompServer>) groups components into web, application, and persistence layers to enforce clear responsibility boundaries. The web layer exposes client-facing endpoints and websocket entry points, and serves as the control point for authorization and request validation. The application layer contains the business workflows, and the persistence layer contains repository-level access to stored review entities.
 
-The LLM Provider subsystem offers a PromptService that Hyperion consumes. This separation keeps LLM access behind a dedicated interface and allows the consistency-check workflow to remain isolated from the provider implementation. The dependencies in the diagram show that web components depend on app-layer services, app-layer components depend on persistence services and the LLM provider, and the client communicates only through the exposed service interfaces.
+The application services are separated to reflect domain responsibilities rather than technical utilities. ExerciseReview owns thread and comment lifecycle rules, ExerciseVersioning handles version creation as an explicit workflow step, and ExerciseSynchronizer handles synchronization behavior tied to exercise changes. Version creation also updates thread line references and outdated states; keeping these responsibilities separate makes lifecycle rules explicit and avoids hidden coupling.
+
+Hyperion and the LLM provider integration are intentionally isolated behind dedicated services and interfaces. The goal is to keep AI-specific processing (prompt execution, response handling, provider-specific behavior) separate from core review-state management. This enables incremental extension, such as additional AI-generated comment types, without redesigning the thread model or editor workflow.
 
 #figure(
   image("../figures/SubDecompServer.pdf", width: 95%),
@@ -83,7 +85,7 @@ CommentThread is linked to the corresponding ProgrammingExercise and, where need
 
 Over the lifetime of the system, data is written at the moment instructors or editors create threads/comments or update thread states, and it is cleaned up according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
 
-The selected storage scheme is a pragmatic hybrid: relational structures for ownership, references, and lifecycle state, combined with structured comment payloads for extensible content types. This balances integrity and flexibility. Relational constraints and explicit mappings support reliable querying and access control, while structured payloads allow the system to evolve consistency-comment content without redesigning the schema for every new field.
+The storage approach combines two ideas. Core review data, such as ownership, references, and thread state, is stored in relational tables. This keeps relationships and queries reliable. At the same time, comment-specific consistency data is stored in structured payload fields, so new consistency-comment details can be added without changing the database schema for every small extension. This combination keeps the model stable while still allowing gradual feature growth.
 
 From an operational perspective, the subsystem reuses Artemis database infrastructure and migration process. Schema changes are managed through Liquibase changelogs, and the same model supports the existing Artemis database setups (for example MySQL and PostgreSQL profiles). For administration, this means the review data follows the same backup, migration, and monitoring workflows as the rest of the platform, with particular attention to thread/comment relations and version references.
 
