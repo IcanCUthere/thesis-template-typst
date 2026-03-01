@@ -154,7 +154,7 @@ The primary actors are Instructor and Editor. Instructors and editors use the re
 
 The first diagram models the core review mechanisms without consistency checks as six main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, toggling a thread as resolved, and submitting changes. The model captures the key dependencies between these paths: starting a thread includes creating the initial comment, deleting a comment extends deleting a thread, and toggling a thread as resolved includes hiding the thread from active review views.
 
-It also links review actions to exercise evolution. Submitting changes includes creating a new exercise version, and that versioning step extends the update of thread line numbers and the marking of threads as outdated where context no longer matches. This structure keeps the basic review flow compact while making explicit how collaborative editing decisions propagate into version history and thread state management.
+It also links review actions to exercise changes. Submitting changes includes creating a new exercise version, and that versioning step extends the update of thread line numbers and the marking of threads as outdated where context no longer matches. This structure keeps the basic review flow compact while making explicit how collaborative editing decisions propagate into version history and thread state management.
 
 #figure(   
   image("../figures/UseCaseDefault.pdf", width: 95%),                                    
