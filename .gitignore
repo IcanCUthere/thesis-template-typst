@@ -5,3 +5,4 @@ figures/*.json
 .idea
 .vscode
 /examples
+/literature

@@ -1,13 +1,35 @@
-// SEARCH TERM: ( "human-in-the-loop" OR "human in the loop" ) AND ( "education" )
+// SEARCH TERMS: 
+// ( "human-in-the-loop" OR "human in the loop" ) AND ( "education" )
+// ("human-in-the-loop" OR "human in the loop" OR HITL OR "human oversight") AND (education OR "computer science education") AND ("large language model*" OR LLM OR "generative AI")
 
+/*
+• 1. ("human-in-the-loop" OR "human in the loop" OR HITL OR "human oversight") AND (education OR "computer science education") AND ("large language model*" OR LLM OR "generative AI")
+  2. ("programming exercise*" OR "programming assignment*") AND ("automatic assessment" OR autograd* OR "continuous feedback") AND ("computer science education" OR "higher education")                                                                           
+  3. ("programming exercise*" OR "programming assignment*") AND ("problem statement" OR specification) AND ("starter code" OR template) AND ("reference solution" OR solution repository) AND (tests OR "test repository") AND (consistency OR alignment OR       
+     mismatch)                                                                                                                                                                                                                                                    
+  4. ("large language model*" OR LLM OR "generative AI") AND ("consistency check*" OR inconsisten* OR alignment) AND ("problem statement" OR specification) AND (code OR repository) AND (education OR "programming education")                                   
+  5. ("structural inconsisten*" OR "semantic inconsisten*") AND ("specification" OR "problem statement") AND code AND ("large language model*" OR LLM)                                                                                                            
+  6. ("human-in-the-loop" OR HITL) AND (grading OR feedback OR assessment OR hints) AND (programming OR coding) AND education                                                                                                                                     
+  7. ("human oversight" OR "human review") AND (instructor* OR teacher* OR educator*) AND ("AI-assisted authoring" OR "content generation" OR "exercise authoring") AND education                                                                                 
+  8. ("code review" OR "review comments" OR "inline comments" OR "pull request review") AND (threads OR "discussion threads") AND (collaboration OR coordination)                                                                                                 
+  9. ("code review" OR "issue tracking") AND (resolved OR "open issues" OR "resolution state" OR triage) AND (workflow OR lifecycle)                                                                                                                              
+  10. ("annotation anchoring" OR "comment anchoring" OR "inline annotation") AND (versioning OR revisions OR "code changes") AND (outdated OR "context preservation")                                                                                             
+  11. ("traceability" OR "audit trail" OR "decision rationale") AND ("code review" OR "issue tracking") AND "software engineering"                                                                                                                                
+  12. ("AI-assisted code review" OR "LLM code review") AND ("human validation" OR "human judgment" OR "human oversight")     
+*/
+
+
+// General software-engineering textbook used for foundational terminology (e.g., UML, object-oriented design, architecture concepts).
+// Use this mainly in background/method framing, not as LLM/HITL related work.
 @book{bruegge2004object,
 	title = {Object Oriented Software Engineering Using UML, Patterns, and Java},
 	author = {Bruegge, Bernd and Dutoit, Allen H},
 	year = {2009},
 	publisher = {Prentice Hall}
-} 
+}
 
-// Explains Artemis, good for the introduction of artemis
+// Core Artemis reference that describes the platform, automated assessment workflow, and scalability goals in programming education.
+// Use this as the canonical source when introducing Artemis context and baseline capabilities before your review-system contribution.
 @CONFERENCE{Krusche2018284,
 	author = {Krusche, Stephan and Seitz, Andreas},
 	title = {ArTEMiS - An automatic assessment management system for interactive learning},
@@ -23,7 +45,8 @@
 	note = {Cited by: 105}
 }
 
-// Explains Iris, maybe use it to show that Artemis already uses AI, but not in the review process
+// Shows that Artemis already integrates AI support (Iris tutor) in student-facing workflows with contextual assistance.
+// Use this to position your thesis as extending AI support toward instructor/editor-side review and consistency workflows.
 @CONFERENCE{Bassner2024394,
 	author = {Bassner, Patrick and Frankford, Eduard and Krusche, Stephan},
 	title = {Iris: An AI-Driven Virtual Tutor for Computer Science Education},
@@ -38,7 +61,8 @@
 	note = {Cited by: 22; All Open Access, Green Open Access}
 }
 
-// Human-in-the-loop approach for student grading, use it to show that human-in-the-loop processes are used in education (specifically grading) but not on the instructor side
+// Programming-assignment grading with ChatGPT-4o plus explicit human-in-the-loop feedback refinement.
+// Use this as strong related work for hybrid AI+human assessment and for arguing that human review improves feedback quality.
 @ARTICLE{Xu2025469,
 	author = {Xu, Ruoyu and Li, Gaoxiang and Sheng, Victor S.},
 	title = {Enhancing ChatGPT-4o's Automated Programming Assignment Grading and Feedback with Human-in-the-Loop Refinement},
@@ -53,7 +77,8 @@
 	note = {Cited by: 0}
 }
 
-// Human-in-the-loop for instructors, that AI gives hints to students for exercises that gets checked by instructors before giving it out
+// Instructor-reviewed hint generation in cybersecurity education using local SLM + RAG and HITL control.
+// Use this for instructor-in-the-loop design patterns and privacy/cost tradeoffs of local vs hosted model usage.
 @CONFERENCE{Wolff2025897,
 	author = {Wolff, Taylor and Weiss, Richard and Cook, Jack and Granville, Joseph and Mache, Jens},
 	title = {EDUHints: A Human-in-the-Loop Small Language Model Hint Generation System for Cybersecurity Education},
@@ -66,7 +91,8 @@
 	note = {Cited by: 0}
 }
 
-// Human-in-the-loop approach for assessment of coding tasks
+// Design-oriented work on AI-assisted formative assessment for web-development coding tasks with HITL as a core principle.
+// Use this as architecture-level related work when discussing requirements, design choices, and limits of fully automated grading.
 @CONFERENCE{Knipp2025379,
 	author = {Knipp, Franz and Winiwarter, Werner},
 	title = {AI-AFACT: Designing AI-Assisted Formative Assessment of Coding Tasks in Web Development Education},
@@ -81,7 +107,8 @@
 	note = {Cited by: 0; All Open Access, Hybrid Gold Open Access}
 }
 
-// Human-in-the-loop approach to generate relevant questions which were checked by instructors beforehand
+// Large-scale classroom study on GenAI-generated assessment questions with continued human moderation by educators.
+// Use this for question/task generation workflows and for arguing that teacher oversight remains necessary despite efficiency gains.
 @ARTICLE{Kituku2025,
 	author = {Kituku, Benson and Araka, Eric and Muuro, Elizaphan},
 	title = {Integrating Generative Artificial Intelligence in Assessment Generation for Higher Education: Computer Science Use Case},
@@ -95,7 +122,8 @@
 	note = {Cited by: 0}
 }
 
-// Human-in-the-loop approach for assessment
+// Automated essay scoring with personalized LLM feedback and human-assisted quality control.
+// Use this as a broader education-assessment reference (non-programming) for hybrid scoring and feedback generation.
 @CONFERENCE{Shalinda2025,
 	author = {Shalinda, Damidu and Asanka, Dinesh},
 	title = {Scoring System for Academic Essay Questions with Personalised Feedback Generation},
@@ -108,7 +136,8 @@
 	note = {Cited by: 0}
 }
 
-// Human-in-the-loop approach for code assessment
+// GenAI-based assessment of design patterns in student code, with explicit HITL supervision for educational reliability.
+// Use this as close programming-related evidence that semantic code assessment benefits from AI support but still needs human validation.
 @ARTICLE{Dosaru2025,
 	author = {Dosaru, Daniel-Florin and Simion, Diana-Maria and Ignat, Andrei-Horia and Negreanu, Lorina-Cristina and Olteanu, Alexandru-Corneliu},
 	title = {Using GenAI to Assess Design Patterns in Student Written Code},
@@ -121,7 +150,8 @@
 	note = {Cited by: 0}
 }
 
-// Human-in-the-loop approach for assessment
+// Pre-LLM but highly relevant HITL grading framework: confidence-based routing between model and human grader.
+// Use this as conceptual grounding for cost-quality tradeoffs and selective automation in assessment workflows.
 @ARTICLE{Funayama2022465,
 	author = {Funayama, Hiroaki and Sato, Tasuku and Matsubayashi, Yuichiroh and Mizumoto, Tomoya and Suzuki, Jun and Inui, Kentaro},
 	title = {Balancing Cost and Quality: An Exploration of Human-in-the-Loop Frameworks for Automated Short Answer Scoring},
@@ -134,4 +164,190 @@
 	publication_stage = {Final},
 	source = {Scopus},
 	note = {Cited by: 11}
+}
+
+// AI-assisted evaluation of ER/schema design artifacts with manual verification of generated references.
+// Use this for open-ended design-task assessment where semantic similarity is more useful than strict syntax matching.
+@ARTICLE{Ramachandran2026,
+	author = {Ramachandran, Raji and Vijayan, Parvathy and Anilkumar, Athulya and Gangadharan, Veena},
+	title = {AI Assisted System for Automated Evaluation of Entity-Relationship Diagram and Schema Diagram Using Large Language Models},
+	year = {2026},
+	journal = {Big Data and Cognitive Computing},
+	volume = {10},
+	number = {1},
+	doi = {10.3390/bdcc10010002},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105028479116&doi=10.3390%2fbdcc10010002&partnerID=40&md5=b5b1451bbc6804c90da92d400499ba20},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 0; All Open Access, Gold Open Access, Green Open Access}
+}
+
+// Case study integrating Gemini into programming-assignment grading with comparison to instructor grades.
+// Use this as recent evidence for practical hybrid grading setups that improve throughput while keeping instructor oversight.
+@ARTICLE{Bernik2025,
+	author = {Bernik, Andrija and Radošević, Danijel and Čep, Andrej},
+	title = {AI-Powered Learning: Revolutionizing Education and Automated Code Evaluation},
+	year = {2025},
+	journal = {Information (Switzerland)},
+	volume = {16},
+	number = {11},
+	doi = {10.3390/info16111015},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105022909215&doi=10.3390%2finfo16111015&partnerID=40&md5=ed715654f66fd375d0c3ca5267a6b1e3},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 0; All Open Access, Gold Open Access, Green Open Access}
+}
+
+// Empirical AI-human agreement study for rubric-based short-answer grading across cognitive levels.
+// Use this to support nuanced claims: LLM scoring is useful for simpler criteria, but human raters remain critical for complex reasoning.
+@ARTICLE{Emirtekin2026,
+	author = {Emirtekin, Emrah and Özarslan, Yasin},
+	title = {Automatic Short-Answer Grading in Sustainability Education: AI–Human Agreement},
+	year = {2026},
+	journal = {Journal of Computer Assisted Learning},
+	volume = {42},
+	number = {1},
+	doi = {10.1002/jcal.70160},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105023534229&doi=10.1002%2fjcal.70160&partnerID=40&md5=63c8bfdc24bcdb5b136c6a041e57b5ea},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 0}
+}
+
+// BPMN-based multi-agent language-learning system with RAG and human validation for explainability and trust.
+// Use this as broader HITL/XAI educational architecture reference (less direct for programming assessment).
+@ARTICLE{Tebourbi2025,
+	author = {Tebourbi, Hedi and Nouzri, Sana and Mualla, Yazan and El Fatimi, Meryem and Najjar, Amro and Abbas-Turki, Abdeljalil and Dridi, Mahjoub},
+	title = {BPMN-Based Design of Multi-Agent Systems: Personalized Language Learning Workflow Automation with RAG-Enhanced Knowledge Access †},
+	year = {2025},
+	journal = {Information (Switzerland)},
+	volume = {16},
+	number = {9},
+	doi = {10.3390/info16090809},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105017000457&doi=10.3390%2finfo16090809&partnerID=40&md5=7c375f055a7fd64698412d8dee463a06},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 1; All Open Access, Gold Open Access, Green Open Access}
+}
+
+// Detection of AI-generated educational content under an intelligence-augmentation setup with human-in-the-loop deployment.
+// Use this mainly for academic-integrity/governance discussions, not as a core source for assessment-authoring workflows.
+@ARTICLE{Su20251036,
+	author = {Su, Zhao and Shen, Jun and Zhou, Qingguo and Yong, Binbin},
+	title = {Deep-Learning-Empowered Detection of Large-Language-Model-Based Generative Content in Educational Tasks},
+	year = {2025},
+	journal = {IEEE Transactions on Learning Technologies},
+	volume = {18},
+	pages = {1036 – 1047},
+	doi = {10.1109/TLT.2025.3626545},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105020475235&doi=10.1109%2fTLT.2025.3626545&partnerID=40&md5=1dc96515f8f11372152cb35e14b45f76},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 0}
+}
+
+// Theory-grounded lesson-planning tool with interactive semi-automated prompting and teacher final control.
+// Use this for HITL content-authoring references, especially where domain context must be collected before generation.
+@ARTICLE{Nyaaba2025,
+	author = {Nyaaba, Matthew and Zhai, Xiaoming},
+	title = {Developing a theory-grounded AI tool for the generation of culturally responsive lesson plans},
+	year = {2025},
+	journal = {Computers and Education: Artificial Intelligence},
+	volume = {9},
+	doi = {10.1016/j.caeai.2025.100474},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105023665982&doi=10.1016%2fj.caeai.2025.100474&partnerID=40&md5=39497595564427f97857b8b9b68296e1},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 1; All Open Access, Gold Open Access}
+}
+
+// Educational LLM framework for generating and evaluating classroom teaching content using curated expert examples.
+// Use this as broader classroom-content generation related work; relevance is moderate for your core assessment workflow.
+@ARTICLE{Tan2025,
+	author = {Tan, Kehui and Yao, Jiayang and Pang, Tianqi and Fan, Chenyou and Song, Yu},
+	title = {ELF: Educational LLM Framework of Improving and Evaluating AI-generated Content for Classroom Teaching},
+	year = {2025},
+	journal = {Journal of Data and Information Quality},
+	volume = {17},
+	number = {3},
+	doi = {10.1145/3712065},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105018302956&doi=10.1145%2f3712065&partnerID=40&md5=90a253542f5a91f8dad4d521a4257b5c},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 7}
+}
+
+// Study on RAG and model capability effects for AI-generated and AI-answered undergraduate exams.
+// Use this for retrieval-grounding effects and policy/oversight implications in AI-assisted assessment pipelines.
+@ARTICLE{Tyndall2025,
+	author = {Tyndall, Erick and Gayheart, Colleen and Some, Alexandre and Genz, Joseph and Wagner, Torrey and Langhals, Brent},
+	title = {Impact of retrieval augmented generation and large language model complexity on undergraduate exams created and taken by AI agents},
+	year = {2025},
+	journal = {Data and Policy},
+	volume = {7},
+	doi = {10.1017/dap.2025.10024},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105014218897&doi=10.1017%2fdap.2025.10024&partnerID=40&md5=e02b3ad0461070d9f7f9da5801399e00},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 0; All Open Access, Gold Open Access, Green Open Access}
+}
+
+// JorGPT instructor-aided programming-assignment grading with rubric customization and multi-LLM comparison.
+// Use this as strong programming-specific HITL evidence for integrating AI grading into instructor workflows.
+@ARTICLE{Cisneros-Gonzalez2025,
+	author = {Cisneros-González, Jorge and Gordo-Herrera, Natalia and Barcia-Santos, Iván and Sánchez-Soriano, Javier},
+	title = {JorGPT: Instructor-Aided Grading of Programming Assignments with Large Language Models (LLMs)},
+	year = {2025},
+	journal = {Future Internet},
+	volume = {17},
+	number = {6},
+	doi = {10.3390/fi17060265},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-105009302428&doi=10.3390%2ffi17060265&partnerID=40&md5=2c81e3dead0c14aac48c5fdade9e3acf},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 5; All Open Access, Gold Open Access, Green Open Access}
+}
+
+// Large-scale LLM-generated item bank for visualization assessment, validated via expert review rulebook.
+// Use this to support claims about scalable item generation while emphasizing mandatory human quality control.
+@ARTICLE{Cui20251094,
+	author = {Cui, Yuan and Ge, Lily W. and Ding, Yiren and Harrison, Lane and Yang, Fumeng and Kay, Matthew},
+	title = {Promises and Pitfalls: Using Large Language Models to Generate Visualization Items},
+	year = {2025},
+	journal = {IEEE Transactions on Visualization and Computer Graphics},
+	volume = {31},
+	number = {1},
+	pages = {1094 – 1104},
+	doi = {10.1109/TVCG.2024.3456309},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-86000386820&doi=10.1109%2fTVCG.2024.3456309&partnerID=40&md5=b553598fd0bcd0231187396909aefe24},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 16; All Open Access, Green Open Access}
+}
+
+// TreeQuestion HITL system that turns conceptual assessment into LLM-generated MCQs with teacher participation.
+// Use this as strong evidence that HITL question generation can reduce teacher workload while preserving assessment quality.
+@ARTICLE{Cheng2024,
+	author = {Cheng, Zirui and Jingfei, X.U. and Haojian, J.I.N.},
+	title = {TreeQuestion: Assessing Conceptual Learning Outcomes with LLM-Generated Multiple-Choice Questions},
+	year = {2024},
+	journal = {Proceedings of the ACM on Human-Computer Interaction},
+	volume = {8},
+	number = {CSCW2},
+	doi = {10.1145/3686970},
+	url = {https://www.scopus.com/inward/record.uri?eid=2-s2.0-85209565187&doi=10.1145%2f3686970&partnerID=40&md5=004a2861757f2111e2a43d812e5c9eda},
+	type = {Article},
+	publication_stage = {Final},
+	source = {Scopus},
+	note = {Cited by: 4; All Open Access, Hybrid Gold Open Access}
 }
