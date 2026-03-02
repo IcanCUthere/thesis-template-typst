@@ -5,7 +5,7 @@
   This chapter follows the System Design Document Template in @bruegge2004object. You describe in this chapter how you map the concepts of the application domain to the solution domain. Some sections are optional, if they do not apply to your problem. Cite @bruegge2004object several times in this chapter.
 ]
 
-In this chapter, we map the concepts of the application domain to the solution domain. Following the System Design Document Template described by Bruegge and Dutoit #cite(<bruegge2004object>), we use the results of the analysis-such as the functional requirements, constraints, and quality attributes-to guide architectural decisions. The goal of this chapter is to establish the technical structure that enables the implementation of the required features. We describe the overall architecture of the review workflow in Artemis, outline the design goals derived from the quality attributes, decompose the system into subsystems, and explain how persistence and access control are realized in the solution domain.
+In this chapter, we map the concepts of the application domain to the solution domain. Following the System Design Document Template described by Bruegge and Dutoit #cite(<bruegge2004object>), we use analysis results, including functional requirements, constraints, and quality attributes, to guide architectural decisions. The goal of this chapter is to establish the technical structure that enables the implementation of the required features. We describe the overall architecture of the review workflow in Artemis, outline the design goals derived from the quality attributes, decompose the system into subsystems, and explain how persistence and access control are realized in the solution domain.
 
 == Overview
 #TODO[
@@ -21,22 +21,22 @@ Artemis operates as a web application with a client-server architecture. The cli
 The design goals derive from the functional requirements, quality attributes, and constraints defined in Chapter 4. Following Bruegge and Dutoit’s guidance on prioritizing conflicting objectives #cite(<bruegge2004object>), the goals below describe the primary forces that shape the architecture and the trade-offs between them.
 
 #par(first-line-indent: 0pt)[*Usability and Familiar Review Interaction*]
-The system must provide a low-friction review experience that aligns with common tools instructors and editors already use. The architecture therefore prioritizes a threaded comment model and a sidebar-based overview navigation pattern familiar from modern review and editor interfaces, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors and editors can interpret and act on comments quickly (QA1, FR6, FR7, FR16).
+The system must provide a low-friction review experience that aligns with common tools instructors and editors already use. The architecture therefore prioritizes a threaded comment model and a sidebar-based overview navigation pattern familiar from modern review and editor interfaces, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors and editors can interpret thread context and status quickly without disrupting editing (QA1, QA2, FR6, FR7, FR16, C1).
 
 #par(first-line-indent: 0pt)[*Reliability and Safe Issue Resolution*]
-All changes must remain under instructor and editor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA2, FR8, FR14, FR15). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
+All changes must remain under instructor and editor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA3, QA4, FR8, FR14, FR15, C2). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
 
 #par(first-line-indent: 0pt)[*Persistence and Traceability*]
-Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors and editors to track decisions and collaborate effectively (FR2). This goal supports auditability and reduces repeated work across iterations.
+Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors and editors to track decisions and collaborate effectively (FR2, FR9, FR10, QA4, C3). This goal supports auditability and reduces repeated work across iterations.
 
 #par(first-line-indent: 0pt)[*Performance and Responsiveness*]
-The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors and editors can continue working while data loads (QA3). Performance is important, but it does not outweigh correctness and usability.
+The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors and editors can continue working while data loads (QA5, QA6, C4). Performance is important, but it does not outweigh correctness and usability.
 
 #par(first-line-indent: 0pt)[*Modularity and Extensibility*]
-The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA4). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
+The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA7, QA8, C1, C3). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
 
 #par(first-line-indent: 0pt)[*Prioritization and Trade-offs*]
-In cases of conflict, the system follows an instructor/editor-first principle: reliability and correctness take precedence over speed, and clarity of review comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with human-in-the-loop requirements.
+In cases of conflict, the system follows an instructor/editor-first principle: reliability and correctness take precedence over speed, and clarity of review comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with role and prompt constraints (C2, C4) and human-in-the-loop requirements.
 
 == Subsystem Decomposition
 #TODO[
@@ -66,6 +66,7 @@ Hyperion and the LLM provider integration are intentionally isolated behind dedi
   caption: [Subsystem decomposition of the server side.],
 ) <SubsystemDecompServer>
 
+/*
 == Hardware Software Mapping
 #TODO[
   This section describes how the subsystems are mapped onto existing hardware and software components. The description is accompanied by a UML deployment diagram. The existing components are often off-the-shelf components. If the components are distributed on different nodes, the network infrastructure and the protocols are also described.
@@ -73,6 +74,7 @@ Hyperion and the LLM provider integration are intentionally isolated behind dedi
 The review workflow reuses the existing Artemis deployment and does not introduce new hardware nodes. The client runs in the browser as part of the Artemis web application, and the server runs in the existing Artemis backend environment. LLM requests go through the existing Hyperion integration via Spring AI.
 
 The implementation follows the established Artemis tech stack: Angular on the client, Spring Boot on the server, and a relational database (PostgreSQL or MySQL) for persistence. Client and server communicate through REST endpoints, and the review subsystem integrates into the existing services for exercises and exercise versions.
+*/
 
 == Persistent Data Management
 #TODO[

@@ -76,17 +76,14 @@ These requirements define the consistency-check-specific workflow and ensure tha
 ]
 This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by #cite(<bruegge2004object>).
 
-#par(first-line-indent: 0pt)[*QA1 Usability*]
-The system shall keep inline review support unobtrusive during code editing. Review threads should not unnecessarily block code content, and users should be able to reduce their visual footprint while editing. At the same time, the interface shall make thread location and thread state immediately recognizable, for example through consistent visual indicators and labels for states such as open, resolved, and outdated.
-
-#par(first-line-indent: 0pt)[*QA2 Reliability*]
-The system shall preserve a reliable and safe review state under normal and failure conditions. Suggested code changes may only be applied after explicit confirmation and successful context validation; otherwise, the operation shall be rejected without modifying exercise content. Thread and comment state shall remain consistent across persistence, reloads, and exercise-version updates, and concurrent updates from multiple active clients shall converge to a consistent result. Failures in checking, applying, or synchronizing changes shall be surfaced with clear, actionable feedback.
-
-#par(first-line-indent: 0pt)[*QA3 Performance*]
-The system shall keep the review workflow responsive during normal editing. Typing, scrolling, cursor movement, thread expand/collapse, and issue navigation shall not be blocked by consistency checks or synchronization updates. Long-running operations (for example consistency checks) shall execute asynchronously, and UI updates shall be applied incrementally instead of full reloads. Under typical exercise size and thread volume, interactive review actions should return quickly and keep the editor usable at all times.
-
-#par(first-line-indent: 0pt)[*QA4 Supportability and Integration*]
-The system shall keep the core review model extensible so that new AI-generated comment types can be introduced without redesigning the thread workflow, storage model, or editor interaction. Integration with existing Artemis workflows (for example authorization, exercise versioning, and editor behavior) shall remain stable when such extensions are added. Comment-type-specific logic shall be isolated from the shared thread lifecycle to support incremental evolution with minimal reconfiguration.
+- *QA1 Unobtrusive Inline Review (Usability):* Inline review elements shall remain unobtrusive during editing and shall not unnecessarily block code content.
+- *QA2 Clear Thread Visibility and State (Usability):* Thread location and status shall be immediately recognizable through consistent indicators and labels (for example open, resolved, outdated).
+- *QA3 Safe Change Application (Reliability):* Suggested code changes shall only be applied after explicit confirmation and successful context validation; otherwise, no content shall be modified.
+- *QA4 Consistent Review State (Reliability):* Thread and comment states shall remain consistent across persistence, reloads, exercise-version updates, and concurrent client updates, with clear feedback on failures.
+- *QA5 Responsive Editor Interaction (Performance):* Editing interactions (typing, scrolling, cursor movement, thread expand/collapse, and issue navigation) shall remain responsive and non-blocking.
+- *QA6 Asynchronous Long-Running Operations (Performance):* Long-running operations (for example consistency checks) shall run asynchronously, and UI updates shall be incremental instead of full reloads.
+- *QA7 Extensible Review Model (Supportability):* The core review model shall support new AI-generated comment types without redesigning the thread workflow, storage model, or editor interaction.
+- *QA8 Stable Integration Boundaries (Supportability):* Comment-type-specific logic shall remain isolated from the shared thread lifecycle, and integration with existing Artemis workflows shall remain stable as extensions are added.
 
 === Constraints
 
@@ -95,9 +92,11 @@ The system shall keep the core review model extensible so that new AI-generated 
 
   - C1 Category: Short Description. 
   - C2 Category: Short Description. 
-  - C3 Category: Short Description.
+  - C3 Category: Short Description. 
 
 ]
+
+Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). The following constraints summarize the key conditions identified for this thesis.
 
 - *C1 Platform Constraint:* The solution shall be implemented within the existing Artemis client-server architecture and codebase.
 - *C2 Role Constraint:* Review functionality shall be restricted to authorized teaching roles (editor level and above).
