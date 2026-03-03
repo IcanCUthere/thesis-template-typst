@@ -51,7 +51,7 @@ Within the data layer, ReviewService, ExerciseEditorSyncService, and Consistency
 
 #figure(
   image("../figures/SubDecompClient.pdf", width: 95%),
-  caption: [Client-Side Subsystem Decomposition. The diagram separates editor presentation logic from data-access and synchronization services in the Artemis client. This separation clarifies responsibilities for review rendering, consistency-check execution, and live-update handling to preserve responsiveness during collaborative editing.],
+  caption: [Client-Side Subsystem Decomposition. The diagram separates editor UI, data services, and live synchronization to keep collaborative editing responsive.],
 ) <SubsystemDecompClient>
 
 #par(first-line-indent: 0pt)[*Server Side*]
@@ -63,7 +63,7 @@ Hyperion and the LLM provider integration are intentionally isolated behind dedi
 
 #figure(
   image("../figures/SubDecompServer.pdf", width: 95%),
-  caption: [Server-Side Subsystem Decomposition. The diagram organizes server components into web, application, and persistence layers and highlights dedicated boundaries for Hyperion and LLM integration. The structure shows how authorization, workflow control, and data access remain isolated while still supporting consistency checks and review-thread lifecycle management.],
+  caption: [Server-Side Subsystem Decomposition. The diagram shows web, application, and persistence layers with isolated Hyperion integration for review workflows.],
 ) <SubsystemDecompServer>
 
 /*
@@ -93,7 +93,7 @@ From an operational perspective, the subsystem reuses Artemis database infrastru
 
 #figure(
   image("../figures/Database.pdf", width: 95%),
-  caption: [Review Persistence Database Schema. The schema shows how thread groups, comment threads, and comments map to exercises and optional exercise versions in relational storage. It highlights lifecycle attributes, line-reference metadata, and ownership relations that preserve traceability across collaborative review and version changes.],
+  caption: [Review Persistence Database Schema. The schema maps thread groups, threads, and comments to exercises and versions for traceable review history.],
 ) <DB>
 
 == Access Control
@@ -120,7 +120,7 @@ Access control follows existing Artemis authorization rules for programming exer
     [Edit comment], [✓], [✓], [✓], [✗],
     [Run consistency check], [✓], [✓], [✓], [✗],
   ),
-  caption: [Access Rights Matrix for Review and Consistency-Check Functions. The table summarizes which roles can create, read, modify, and resolve review artifacts and run consistency checks in the editor workflow. It visualizes the role constraint that restricts review operations to authorized teaching roles.],
+  caption: [Access Rights Matrix for Review and Consistency-Check Functions. The table summarizes allowed actions for admin, instructor, editor, and student roles.],
 ) <AccessRightsMatrix>
 
 == Global Software Control

@@ -1,6 +1,6 @@
 // Enter your thesis data here:
 #let titleEnglish = "Introducing AI-Assisted Human-in-the-Loop Review for Programming Exercises"
-#let titleGerman = "Einführung von KI-Assistierter Human-in-the-Loop Review für Programmier-Aufgaben"
+#let titleGerman = "Einführung von KI-assistiertem Human-in-the-Loop-Review für Programmieraufgaben"
 #let degree = "Bachelor"
 #let program = "Information Systems"
 #let examiner = "Prof. Dr. Stephan Krusche"

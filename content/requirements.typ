@@ -96,12 +96,12 @@ This section details the quality attributes of the proposed system and defines c
 
 ]
 
-Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). The following constraints summarize the key conditions identified for this thesis.
+Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Following Bruegge and Dutoit, the constraints below are grouped into implementation, interface, and operations requirement categories. Packaging and legal requirement categories are currently out of scope for this thesis prototype.
 
-- *C1 Platform Constraint:* The solution shall be implemented within the existing Artemis client-server architecture and codebase.
-- *C2 Role Constraint:* Review functionality shall be restricted to authorized teaching roles (editor level and above).
-- *C3 Persistence and Compatibility Constraint:* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.
-- *C4 Prompt Data Minimization Constraint:* LLM prompts shall include only the data required for the specific consistency check, and prompt payloads shall be kept as short as possible to reduce token usage while preserving sufficient context for reliable results.
+- *C1 Platform Constraint (Implementation Requirement):* The solution shall be implemented within the existing Artemis client-server architecture and codebase.
+- *C2 Role Constraint (Operations Requirement):* Review functionality in production operation shall be restricted to authorized teaching roles (editor level and above).
+- *C3 Persistence and Compatibility Constraint (Interface Requirement):* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.
+- *C4 Prompt Data Minimization Constraint (Operations Requirement):* LLM prompts shall include only the data required for the specific consistency check, and prompt payloads shall be kept as short as possible to reduce token usage while preserving sufficient context for reliable results.
 
 == System Models
 #TODO[
@@ -157,7 +157,7 @@ It also links review actions to exercise changes. Submitting changes includes cr
 
 #figure(   
   image("../figures/UseCaseDefault.pdf", width: 95%),                                    
-  caption: [Basic Review Collaboration Use Cases. The diagram shows how instructors and editors create, discuss, update, and resolve review threads without running consistency checks. Include and extend relations highlight how review actions connect to exercise submission, new version creation, line-reference updates, and outdated-state management.],
+  caption: [Basic Review Collaboration Use Cases. The diagram shows thread creation, discussion, resolution, and version-related updates in the base workflow.],
 ) <UseCaseBasic>
 
 #par(first-line-indent: 0pt)[*Consistency Check Review Use Cases*]
@@ -168,7 +168,7 @@ This model separates automated issue generation from follow-up actions on indivi
 
 #figure(   
   image("../figures/UseCaseConsistency.pdf", width: 95%),                                    
-  caption: [Consistency-Check Review Use Cases. The diagram shows how the system transforms consistency-check results into grouped review threads and how users navigate to issues and optionally apply suggested fixes. Include relations mark mandatory persistence behavior, and the extend relation captures optional code-change application under explicit human control.],
+  caption: [Consistency-Check Review Use Cases. The diagram shows issue generation, grouping, navigation, and optional application of suggested code changes.],
 ) <UseCaseConsistency>
 
 === Analysis Object Model
@@ -182,7 +182,7 @@ The analysis object model in #ref(<AOM>) describes the core domain concepts of t
 
 #figure(   
   image("../figures/AOM Diagram.pdf", width: 95%),                                    
-  caption: [Analysis Object Model of the Review Domain. The model captures domain entities for exercises, repositories, files, threads, and comments, and it distinguishes user comments from consistency comments through specialization. Composition and association relations show ownership boundaries and explain why comments and thread state remain tied to file context and exercise evolution.],
+  caption: [Analysis Object Model of the Review Domain. The model shows core entities and relations for exercises, files, threads, and comment types.],
 ) <AOM>
 
 A Thread captures a discussion at a specific line. It stores its resolution state, outdated state, and lineNumber, and it offers operations to add and manage comments. Both Files and the ProblemStatement can show multiple Threads. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
@@ -203,7 +203,7 @@ After resolving an issue, the Instructor presses “Submit”, and Artemis saves
 
 #figure(   
   image("../figures/Activity Diagram.pdf", width: 95%),                                    
-  caption: [Activity Diagram of the Consistency Review Workflow. The diagram traces the end-to-end flow from running a consistency check to reviewing, applying or rejecting suggested fixes, resolving comments, and submitting a new exercise version. Decision nodes emphasize human-in-the-loop control, while system actions highlight persistence and state updates across the workflow.],
+  caption: [Activity Diagram of the Consistency Review Workflow. The diagram shows check execution, issue review, fix decisions, resolution, and submission.],
 ) <ACTDIA>
 
 === User Interface
@@ -216,7 +216,7 @@ Each comment provides a compact three-dot menu for comment-level actions such as
 
 #figure(
   image("../figures/Comment Mockup.pdf", width: 80%),
-  caption: [Comment-Thread Interaction Mockup. The mockup shows inline discussion flow with comment actions, a reply input, and explicit resolve controls in one thread view. The layout emphasizes chronological context and quick follow-up actions so reviewers can decide and document outcomes without leaving the editor.],
+  caption: [Comment-Thread Interaction Mockup. The mockup shows inline discussion with comment actions, reply input, and resolve control.],
 ) <UICommentThread>
 
 For the overview UI, the editor needed a dedicated space to list and filter comments. The mockup in #ref(<UIOverview>) builds on the existing Artemis editor layout, which previously used two sidebars (left and right). In the revised layout, the right sidebar is removed and the left sidebar is transformed into a tab view. This keeps interaction patterns familiar from common editor interfaces, but is not tied to one specific tool.
@@ -225,5 +225,5 @@ The tab-based sidebar improves extensibility because additional views can be add
 
 #figure(
   image("../figures/UI Mockups/One-Sided Comments.png", width: 100%),
-  caption: [Comment Overview and Navigation Mockup. The mockup illustrates a tab-based sidebar that lists and filters review comments while preserving editor space for code and problem-statement work. The design shows how users navigate between issues quickly and keep review context visible during editing.],
+  caption: [Comment Overview and Navigation Mockup. The mockup shows tab-based listing, filtering, and fast navigation while preserving editor space.],
 ) <UIOverview>

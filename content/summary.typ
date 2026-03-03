@@ -37,7 +37,7 @@ This section summarizes the implementation status of the functional requirements
     [FR15], [Validate Suggested Code Changes], [✓],
     [FR16], [Provide Consistency Issue Overview and Navigation], [◐],
   ),
-  caption: [Functional Requirement Status Overview. The table reports implementation progress for FR1 to FR16 and marks each requirement as fulfilled, partially fulfilled, or open. It provides the reference baseline for discussing realized capabilities and remaining gaps in the current thesis scope.],
+  caption: [Functional Requirement Status Overview. The table summarizes fulfillment of FR1-FR16 as fulfilled, partially fulfilled, or open.],
 ) <FRStatusTable>
 
 === Realized Goals
