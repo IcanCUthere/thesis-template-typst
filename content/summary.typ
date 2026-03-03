@@ -37,7 +37,7 @@ This section summarizes the implementation status of the functional requirements
     [FR15], [Validate Suggested Code Changes], [✓],
     [FR16], [Provide Consistency Issue Overview and Navigation], [◐],
   ),
-  caption: [Status of functional requirements.],
+  caption: [Functional Requirement Status Overview. The table reports implementation progress for FR1 to FR16 and marks each requirement as fulfilled, partially fulfilled, or open. It provides the reference baseline for discussing realized capabilities and remaining gaps in the current thesis scope.],
 ) <FRStatusTable>
 
 === Realized Goals
@@ -58,7 +58,7 @@ The consistency-specific workflow is integrated into the same review model. Find
   Summarize the open goals by repeating the open requirements or use cases and explaining why you were not able to achieve them. Important: It might be suspicious, if you do not have open goals. This usually indicates that you did not thoroughly analyze your problems.
 ]
 
-As shown in Table #ref(<FRStatusTable>), two requirements remain partially fulfilled. FR7 (hide review threads in the editor) is currently only partially realized, because threads can be collapsed but not fully hidden from the editor view. As a result, review elements still occupy visible space in dense files and can interrupt continuous code editing, especially when many comments are concentrated in one area.
+Table #ref(<FRStatusTable>) shows that two requirements remain partially fulfilled. FR7 (hide review threads in the editor) is currently only partially realized, because threads can be collapsed but not fully hidden from the editor view. Review elements therefore still occupy visible space in dense files and can interrupt continuous code editing, especially when many comments are concentrated in one area.
 
 FR16 (consistency issue overview and navigation) is also partially fulfilled. The current implementation provides a consistency-focused navigation component with previous/next traversal and severity-based ordering, but it does not provide a unified overview across all thread types or configurable ordering. This limits flexibility in larger review sessions, because different prioritization strategies cannot be applied directly and multiple UI views are still required to track all open discussion threads.
 
@@ -76,7 +76,7 @@ In addition, the thesis integrates consistency-check findings into the same revi
   Tell us the next steps (that you would do if you have more time). Be creative, visionary and open-minded here.
 ]
 
-As a first step, future work should complete the remaining gaps of this thesis, especially the partially fulfilled requirements in Table #ref(<FRStatusTable>). This includes full thread-visibility control in the editor (beyond collapsing) and a unified, configurable overview that supports navigation across all thread types.
+Future work should first close the remaining gaps of this thesis, especially the partially fulfilled requirements in Table #ref(<FRStatusTable>). This includes full thread-visibility control in the editor (beyond collapsing) and a unified, configurable overview that supports navigation across all thread types.
 
 Beyond these near-term completions, the long-term direction is broader automation of exercise creation workflows. One next step is comment-driven expansion, where instructors and editors can write intent as review comments and let the system generate coordinated updates across the problem statement, template, solution, and tests.
 

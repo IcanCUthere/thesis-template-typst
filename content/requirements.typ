@@ -11,15 +11,15 @@ This chapter examines the requirements for integrating AI-assisted review into A
 #TODO[
   Provide a short overview about the purpose, scope, objectives and success criteria of the system that you like to develop.
 ]
-This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors and editors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review comments. Its scope covers detecting inconsistencies across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review comment system with persistence across exercise versions, provide clear inline issue presentation and navigation, and enable instructors and editors to preview and apply suggested code changes under human control. The system is considered successful if it reduces review effort, improves transparency of inconsistencies, and is judged usable by instructors and editors in evaluation.
+This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors and editors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review comments. Its scope covers detecting consistency issues across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review comment system with persistence across exercise versions, provide clear inline issue presentation and navigation, and enable instructors and editors to preview and apply suggested code changes under human control. The system is considered successful if it reduces review effort, improves transparency of consistency issues, and is judged usable by instructors and editors in evaluation.
 
 == Existing System
 #TODO[
   This section is only required if the proposed system (i.e. the system that you develop in the thesis) should replace an existing system.
 ]
-Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-driven exercise creation assistant that helps instructors and editors create high-quality exercises more efficiently, including consistency checking. An instructor or editor can trigger a check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected inconsistencies, including severity, categories, and suggested fix descriptions. The current interface exposes this output as raw JSON, so instructors and editors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
+Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-assisted exercise creation assistant that helps instructors and editors create high-quality exercises more efficiently, including consistency checking. An instructor or editor can trigger a check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected consistency issues, including severity, category, and suggested fix description. The current interface exposes this output as raw JSON, so instructors and editors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
 
-The existing system does not persist consistency results. Once the page is reloaded or the exercise version changes, the detected issues are lost and the check must be rerun. There is also no review comment mechanism to track resolution status or discussion over time, which makes it difficult to maintain consistency across iterations and coordinate among multiple instructors.
+The existing system does not persist consistency results. When the page reloads or the exercise version changes, Artemis discards detected issues and users must rerun the check. Artemis also lacks a review comment mechanism for tracking resolution state and discussion over time, which makes cross-iteration consistency management and team coordination difficult.
 
 == Proposed System
 #TODO[
@@ -74,7 +74,7 @@ These requirements define the consistency-check-specific workflow and ensure tha
   - QA3 Category: Short Description.
 
 ]
-This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the URPS categories described by #cite(<bruegge2004object>).
+This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the Usability, Reliability, Performance, and Supportability (URPS) categories described by Bruegge and Dutoit #cite(<bruegge2004object>).
 
 - *QA1 Unobtrusive Inline Review (Usability):* Inline review elements shall remain unobtrusive during editing and shall not unnecessarily block code content.
 - *QA2 Clear Thread Visibility and State (Usability):* Thread location and status shall be immediately recognizable through consistent indicators and labels (for example open, resolved, outdated).
@@ -145,31 +145,31 @@ Sofia then reviews a second comment that proposes an edit in the test file. She 
   This subsection should contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram. Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex).
 
 ]
-To model the review workflow, this subsection follows the structure proposed by Bruegge and Dutoit #cite(<bruegge2004object>). It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
+This subsection models the review workflow using the structure proposed by Bruegge and Dutoit #cite(<bruegge2004object>). It identifies the main actors, defines the system's primary interactions, and explains the rationale behind the modeling choices.
 
 The primary actors are Instructor and Editor. Instructors and editors use the review system to discuss and resolve issues in programming exercises and to incorporate LLM-based consistency feedback. All interactions occur within the Artemis programming exercise editor, where review comments provide the shared interface for collaboration and resolution.
 
 #par(first-line-indent: 0pt)[*Basic Review Collaboration Use Cases*]
 
-The first diagram models the core review mechanisms without consistency checks as six main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, toggling a thread as resolved, and submitting changes. The model captures the key dependencies between these paths: starting a thread includes creating the initial comment, deleting a comment extends deleting a thread, and toggling a thread as resolved includes hiding the thread from active review views.
+Figure #ref(<UseCaseBasic>) models the core review mechanisms without consistency checks as six main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, toggling a thread as resolved, and submitting changes. The model captures key dependencies between these paths: starting a thread includes creating the initial comment, deleting a comment extends deleting a thread, and toggling a thread as resolved includes hiding the thread from active review views.
 
 It also links review actions to exercise changes. Submitting changes includes creating a new exercise version, and that versioning step extends the update of thread line numbers and the marking of threads as outdated where context no longer matches. This structure keeps the basic review flow compact while making explicit how collaborative editing decisions propagate into version history and thread state management.
 
 #figure(   
   image("../figures/UseCaseDefault.pdf", width: 95%),                                    
-  caption: [Use case diagram for basic, collaborative reviewing.],
-)
+  caption: [Basic Review Collaboration Use Cases. The diagram shows how instructors and editors create, discuss, update, and resolve review threads without running consistency checks. Include and extend relations highlight how review actions connect to exercise submission, new version creation, line-reference updates, and outdated-state management.],
+) <UseCaseBasic>
 
 #par(first-line-indent: 0pt)[*Consistency Check Review Use Cases*]
 
-The second diagram structures the consistency workflow around two main use cases: checking consistency and jumping to an issue. Checking consistency includes storing detected issues as review threads, and storing issues includes creating a thread group so generated threads are organized consistently. The jump-to-issue path is connected to applying code changes through an extend relation, and applying a code change includes toggling the related thread as resolved.
+Figure #ref(<UseCaseConsistency>) structures the consistency workflow around two main use cases: checking consistency and jumping to an issue. Checking consistency includes storing detected issues as review threads, and storing issues includes creating a thread group so generated threads stay organized. The jump-to-issue path is connected to applying code changes through an extend relation, and applying a code change includes toggling the related thread as resolved.
 
 This model separates automated issue generation from follow-up actions on individual issues. The include relations capture the mandatory system behavior during check execution (issue persistence and grouping), while the extend relation captures optional fix application during navigation. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
 
 #figure(   
   image("../figures/UseCaseConsistency.pdf", width: 95%),                                    
-  caption: [Use case diagram the review process with consistency checks.],
-)
+  caption: [Consistency-Check Review Use Cases. The diagram shows how the system transforms consistency-check results into grouped review threads and how users navigate to issues and optionally apply suggested fixes. Include relations mark mandatory persistence behavior, and the extend relation captures optional code-change application under explicit human control.],
+) <UseCaseConsistency>
 
 === Analysis Object Model
 #TODO[
@@ -182,7 +182,7 @@ The analysis object model in #ref(<AOM>) describes the core domain concepts of t
 
 #figure(   
   image("../figures/AOM Diagram.pdf", width: 95%),                                    
-  caption: [Analysis Object Model for the review system.],
+  caption: [Analysis Object Model of the Review Domain. The model captures domain entities for exercises, repositories, files, threads, and comments, and it distinguishes user comments from consistency comments through specialization. Composition and association relations show ownership boundaries and explain why comments and thread state remain tied to file context and exercise evolution.],
 ) <AOM>
 
 A Thread captures a discussion at a specific line. It stores its resolution state, outdated state, and lineNumber, and it offers operations to add and manage comments. Both Files and the ProblemStatement can show multiple Threads. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
@@ -195,7 +195,7 @@ The model focuses on domain concepts that users reason about during review: exer
 #TODO[
   This subsection should contain dynamic UML diagrams. These can be a UML state diagrams, UML communication diagrams or UML activity diagrams.*Important:* Make sure to describe the diagram and its rationale in the text. *Do not use UML sequence diagrams.*
 ]
-The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review workflow across the Instructor, Artemis, and Hyperion. The process starts when the Instructor clicks “Check Consistency”, Artemis forwards the request to Hyperion, and Hyperion either finds no inconsistencies or returns consistency issues. When Artemis receives issues, it stores them as review comments and shows them inline so the Instructor can jump to each one.
+The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review workflow across the Instructor, Artemis, and Hyperion. The process starts when the Instructor clicks “Check Consistency”, Artemis forwards the request to Hyperion, and Hyperion either finds no consistency issues or returns consistency issues. When Artemis receives issues, it stores them as review comments and shows them inline so the Instructor can jump to each one.
 
 For every issue, the Instructor first jumps to it and then decides whether the suggested code-fix makes sense. When it does not make sense, the Instructor changes the code manually. When it does make sense, the Instructor presses “Apply”, and Artemis applies the changes to the exercise. In both cases, the Instructor then presses “Resolve”, after which Artemis stores the resolved state and hides the comment.
 
@@ -203,7 +203,7 @@ After resolving an issue, the Instructor presses “Submit”, and Artemis saves
 
 #figure(   
   image("../figures/Activity Diagram.pdf", width: 95%),                                    
-  caption: [Activity Diagram for the review system.],
+  caption: [Activity Diagram of the Consistency Review Workflow. The diagram traces the end-to-end flow from running a consistency check to reviewing, applying or rejecting suggested fixes, resolving comments, and submitting a new exercise version. Decision nodes emphasize human-in-the-loop control, while system actions highlight persistence and state updates across the workflow.],
 ) <ACTDIA>
 
 === User Interface
@@ -216,7 +216,7 @@ Each comment provides a compact three-dot menu for comment-level actions such as
 
 #figure(
   image("../figures/Comment Mockup.pdf", width: 80%),
-  caption: [Mockup of the comment-thread interaction.],
+  caption: [Comment-Thread Interaction Mockup. The mockup shows inline discussion flow with comment actions, a reply input, and explicit resolve controls in one thread view. The layout emphasizes chronological context and quick follow-up actions so reviewers can decide and document outcomes without leaving the editor.],
 ) <UICommentThread>
 
 For the overview UI, the editor needed a dedicated space to list and filter comments. The mockup in #ref(<UIOverview>) builds on the existing Artemis editor layout, which previously used two sidebars (left and right). In the revised layout, the right sidebar is removed and the left sidebar is transformed into a tab view. This keeps interaction patterns familiar from common editor interfaces, but is not tied to one specific tool.
@@ -225,5 +225,5 @@ The tab-based sidebar improves extensibility because additional views can be add
 
 #figure(
   image("../figures/UI Mockups/One-Sided Comments.png", width: 100%),
-  caption: [Mockup of the overview UI to navigate between comments.],
+  caption: [Comment Overview and Navigation Mockup. The mockup illustrates a tab-based sidebar that lists and filters review comments while preserving editor space for code and problem-statement work. The design shows how users navigate between issues quickly and keep review context visible during editing.],
 ) <UIOverview>

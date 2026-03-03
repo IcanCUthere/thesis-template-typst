@@ -12,7 +12,7 @@ In this chapter, we map the concepts of the application domain to the solution d
   Provide a brief overview of the software architecture and references to other chapters (e.g. requirements), references to existing systems, constraints impacting the software architecture..
 ]
 
-Artemis operates as a web application with a client-server architecture. The client provides the programming exercise editor and review UI, while the server hosts the review workflow, persistence logic, and integration with Hyperion via Spring AI. Client and server communicate through REST endpoints, which keeps presentation and business logic separated and supports stable integration with existing Artemis components. The review subsystem integrates into the existing infrastructure for exercises and exercise versions so that review comments remain linked to the correct exercise version and permissions.
+Artemis operates as a web application with a client-server architecture. The client provides the programming exercise editor and review UI, while the server hosts the review workflow, persistence logic, and integration with Hyperion via Spring AI. Client and server communicate through Representational State Transfer (REST) endpoints, which keeps presentation and business logic separated and supports stable integration with existing Artemis components. The review subsystem integrates into the existing infrastructure for exercises and exercise versions so that review comments remain linked to the correct exercise version and permissions.
 
 == Design Goals
 #TODO[
@@ -51,7 +51,7 @@ Within the data layer, ReviewService, ExerciseEditorSyncService, and Consistency
 
 #figure(
   image("../figures/SubDecompClient.pdf", width: 95%),
-  caption: [Subsystem decomposition of the client side.],
+  caption: [Client-Side Subsystem Decomposition. The diagram separates editor presentation logic from data-access and synchronization services in the Artemis client. This separation clarifies responsibilities for review rendering, consistency-check execution, and live-update handling to preserve responsiveness during collaborative editing.],
 ) <SubsystemDecompClient>
 
 #par(first-line-indent: 0pt)[*Server Side*]
@@ -63,7 +63,7 @@ Hyperion and the LLM provider integration are intentionally isolated behind dedi
 
 #figure(
   image("../figures/SubDecompServer.pdf", width: 95%),
-  caption: [Subsystem decomposition of the server side.],
+  caption: [Server-Side Subsystem Decomposition. The diagram organizes server components into web, application, and persistence layers and highlights dedicated boundaries for Hyperion and LLM integration. The structure shows how authorization, workflow control, and data access remain isolated while still supporting consistency checks and review-thread lifecycle management.],
 ) <SubsystemDecompServer>
 
 /*
@@ -81,7 +81,7 @@ The implementation follows the established Artemis tech stack: Angular on the cl
   Optional section that describes how data is saved over the lifetime of the system and which data. Usually this is either done by saving data in structured files or in databases. If this is applicable for the thesis, describe the approach for persisting data here and show a UML class diagram how the entity objects are mapped to persistent storage. It contains a rationale of the selected storage scheme, file system or database, a description of the selected database and database administration issues.
 ]
 
-The review workflow stores its data in Artemis's relational database so that review information remains available across sessions and across exercise versions. As shown in #ref(<DB>), the persistence model centers on three entities: ThreadGroup, CommentThread, and Comment. ThreadGroup organizes related threads within one exercise, CommentThread stores the thread line reference and lifecycle state, and Comment stores the individual discussion entries and consistency-check outputs.
+The review workflow stores its data in Artemis's relational database so that review information remains available across sessions and across exercise versions. Figure #ref(<DB>) shows that the persistence model centers on three entities: ThreadGroup, CommentThread, and Comment. ThreadGroup organizes related threads within one exercise, CommentThread stores the thread line reference and lifecycle state, and Comment stores the individual discussion entries and consistency-check outputs.
 
 CommentThread is linked to the corresponding ProgrammingExercise and, where needed, to an ExerciseVersion. In addition to the thread state (for example resolved and outdated), the model stores line-reference metadata such as repository target, file path, line number, and initial version/commit references. This allows the system to keep review context stable even when the exercise evolves. Comments are linked to a thread and an optional author, and consistency-related comment content can carry both a human-readable fix description and an optional suggested inline code change.
 
@@ -93,7 +93,7 @@ From an operational perspective, the subsystem reuses Artemis database infrastru
 
 #figure(
   image("../figures/Database.pdf", width: 95%),
-  caption: [Database Schema.],
+  caption: [Review Persistence Database Schema. The schema shows how thread groups, comment threads, and comments map to exercises and optional exercise versions in relational storage. It highlights lifecycle attributes, line-reference metadata, and ownership relations that preserve traceability across collaborative review and version changes.],
 ) <DB>
 
 == Access Control
@@ -120,7 +120,7 @@ Access control follows existing Artemis authorization rules for programming exer
     [Edit comment], [✓], [✓], [✓], [✗],
     [Run consistency check], [✓], [✓], [✓], [✗],
   ),
-  caption: [Access rights for review and consistency-check functions.],
+  caption: [Access Rights Matrix for Review and Consistency-Check Functions. The table summarizes which roles can create, read, modify, and resolve review artifacts and run consistency checks in the editor workflow. It visualizes the role constraint that restricts review operations to authorized teaching roles.],
 ) <AccessRightsMatrix>
 
 == Global Software Control
@@ -132,7 +132,7 @@ Artemis uses a hybrid control model for the review workflow. User actions are ha
 
 The runtime processes requests and live notifications concurrently. This is important because multiple users can review the same exercise at the same time, and the system must remain responsive for all active clients.
 
-To keep shared state stable, the client synchronization logic handles delayed or repeated updates safely. Temporary differences between open views are resolved without corrupting state, so the workflow remains eventually consistent during concurrent work.
+The client synchronization logic keeps shared state stable by handling delayed or repeated updates safely. Temporary differences between open views are resolved without corrupting state, so the workflow remains eventually consistent during concurrent work.
 
 /*
 == Boundry Conditions
