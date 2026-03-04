@@ -42,29 +42,23 @@ In cases of conflict, the system follows an instructor/editor-first principle: r
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
-The subsystem decomposition in #ref(<SubsystemDecompClient>) and #ref(<SubsystemDecompServer>) is driven by two architectural priorities: keeping the editor interaction responsive for instructors and editors, and isolating persistence and AI-assisted processing so each concern can evolve independently.
+The subsystem decomposition shown in #ref(<SubsystemDecompCombined>) is driven by two architectural priorities: keeping editor interaction responsive for instructors and editors, and isolating persistence and AI-assisted processing so each concern can evolve independently.
+At a high level, the client subsystem provides interaction services (inline review display, comment actions, issue navigation, and consistency-check initiation), while the server subsystem provides persistence, synchronization, version-aware anchor maintenance, and consistency-issue processing.
 
 #par(first-line-indent: 0pt)[*Client Side*]
-The client diagram in #ref(<SubsystemDecompClient>) separates presentation concerns from data and synchronization concerns. This separation is intentional: the editor UI must remain focused on interaction (editing, navigation, thread visualization), while data access and synchronization logic must handle server communication, retries, and state updates. Keeping these responsibilities separate reduces UI coupling and makes the editor behavior easier to test and evolve.
+On the client side, the decomposition separates interaction-focused UI components from the service interfaces they use to communicate with the server. CodeEditor, ProblemStatementEditor, FileBrowser, and ExerciseContainer remain focused on editing, navigation, and exercise interaction, while ReviewCommentManager centralizes review-comment behavior across these views. This keeps review-comment handling decoupled from the individual UI components and makes the editor behavior easier to test and evolve.
 
-Within the data layer, ReviewService, ExerciseEditorSyncService, and ConsistencyCheckService are split because they operate with different interaction patterns and failure modes. ReviewService covers regular read/write operations on persisted review state, ExerciseEditorSyncService handles live propagation across active clients, and ConsistencyCheckService handles longer-running AI-assisted checks. Isolating these flows avoids one concern (for example delayed check responses) degrading others (for example local editor responsiveness), which directly supports usability and reliability goals.
-
-#figure(
-  image("../figures/SubDecompClient.pdf", width: 95%),
-  caption: [Client-Side Subsystem Decomposition. The diagram separates editor UI, data services, and live synchronization to keep collaborative editing responsive.],
-) <SubsystemDecompClient>
+The client communicates with the server through three dedicated interfaces with different interaction patterns and failure modes. ReviewCommentManager uses StoreAndFetchService for regular read/write access to persisted review state and LiveUpdateService for push-based synchronization across active clients, while ExerciseContainer uses ConsistencyCheckService to trigger longer-running AI-assisted checks. Isolating these flows avoids one concern (for example delayed check responses) from degrading others (for example local editor responsiveness), which directly supports usability and reliability goals.
 
 #par(first-line-indent: 0pt)[*Server Side*]
-The server diagram in #ref(<SubsystemDecompServer>) groups components into web, application, and persistence layers to enforce clear responsibility boundaries. The web layer exposes client-facing endpoints and websocket entry points, and serves as the control point for authorization and request validation. The application layer contains the business workflows, and the persistence layer contains repository-level access to stored review entities.
+On the server side, the decomposition separates review-state management, versioning, and AI-assisted checking into distinct components. ExerciseReview owns the core review workflow and manages review data exchanged with the client. ExerciseVersioning handles version creation as an explicit workflow step and then invokes ExerciseReview to remap comment anchors to the new file state; if remapping fails or context has changed significantly, ExerciseReview marks the affected comments as outdated. Hyperion handles consistency checks and feeds their results back into the review workflow. This keeps domain responsibilities explicit and avoids hidden coupling between review-state management, version creation, and automated analysis.
 
-The application services are separated to reflect domain responsibilities rather than technical utilities. ExerciseReview owns thread and comment lifecycle rules, ExerciseVersioning handles version creation as an explicit workflow step, and ExerciseSynchronizer handles synchronization behavior tied to exercise changes. Version creation also updates thread line references and outdated states; keeping these responsibilities separate makes lifecycle rules explicit and avoids hidden coupling.
-
-Hyperion and the LLM provider integration are intentionally isolated behind dedicated services and interfaces. The goal is to keep AI-specific processing (prompt execution, response handling, provider-specific behavior) separate from core review-state management. This enables incremental extension, such as additional AI-generated comment types, without redesigning the thread model or editor workflow.
+Artemis already provides the separation between persistence and LLM integration through DataService and PromptService. This thesis reuses these existing boundaries and integrates the review workflow through ExerciseReview, ExerciseVersioning, and Hyperion interfaces. The contribution in this section is therefore not the separation itself, but the integration contract across these components: Hyperion findings are transformed into review comments, version creation triggers anchor remapping and outdated-state handling, and thread-state changes are propagated through the synchronization path to active clients.
 
 #figure(
-  image("../figures/SubDecompServer.pdf", width: 95%),
-  caption: [Server-Side Subsystem Decomposition. The diagram shows web, application, and persistence layers with isolated Hyperion integration for review workflows.],
-) <SubsystemDecompServer>
+  image("../figures/SubDecompCombined.pdf", width: 95%),
+  caption: [Combined Subsystem Decomposition. The diagram shows how client components, server workflows, persistence, and Hyperion integration interact in the review architecture.],
+) <SubsystemDecompCombined>
 
 /*
 == Hardware Software Mapping
