@@ -34,7 +34,7 @@ These improvements let instructors and editors focus on pedagogical refinement i
 #TODO[
   Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
 ]
-The thesis defines concrete objectives that guide the implementation. Each objective targets a key improvement for exercise authoring and maintenance: persistent consistency checks, direct integration of suggested code changes, and intuitive support for human-in-the-loop review. The objectives are:
+The thesis defines concrete objectives that guide the implementation. Each objective targets a key improvement for exercise creation: persistent consistency checks, direct integration of suggested code changes, and intuitive support for human-in-the-loop review. The objectives are:
 + Add Inline Comments and Navigation Options
 + Implement Persistent Storage and Collaboration
 + Propose Inline Code Improvements
@@ -43,23 +43,23 @@ The thesis defines concrete objectives that guide the implementation. Each objec
 
 The first goal enhances how Artemis presents consistency check results and makes them directly actionable. Artemis currently shows only raw JSON from the LLM request, so instructors and editors must interpret the output manually. The improved interface shows the findings as inline comments in the editor and gives immediate context during review.
 
-Each comment describes the issue, provides a fix rationale, and marks affected lines with a severity level. When instructors and editors rerun a consistency check, Artemis updates existing comments, removes resolved findings, and keeps the displayed feedback aligned with the current exercise state.
+Each comment describes the consistency issue, provides a fix rationale, and marks affected lines with a severity level. When instructors and editors rerun a consistency check, Artemis updates existing comments, removes resolved findings, and keeps the displayed feedback aligned with the current exercise state.
 
 A dropdown overview summarizes all detected consistency issues. Instructors and editors can inspect severity, affected files, and line ranges, and they can filter or sort by severity, component, or issue category. This overview supports faster prioritization and clearer tracking of resolved and unresolved work.
 
 === Implement Persistent Storage and Collaboration
 
-The next goal extends Artemis data management with persistent storage for consistency issues and LLM-generated fix suggestions. Artemis currently keeps detected issues only in the active client session after a consistency check.
+The next goal extends Artemis data management with persistent storage for consistency issues and LLM-generated fix suggestions. Artemis currently keeps detected consistency issues only in the active client session after a consistency check.
 
 The server-side model adds a dedicated entity for consistency issues and links each entry to the exercise, file, and exercise version. Artemis stores the description, severity, category, suggested fix description, affected line range, and timestamps so users can query and restore findings later.
 
-This goal also adds collaborative review support. Multiple instructors and editors can review the same exercise in parallel without overwriting each other's comments. A synchronization mechanism propagates issue-status changes, and conflict handling prevents race conditions, for example when two users try to resolve the same issue simultaneously.
+This goal also adds collaborative review support. Multiple instructors and editors can review the same exercise in parallel without overwriting each other's comments. A synchronization mechanism propagates consistency-issue status changes, and conflict handling prevents race conditions, for example when two users try to resolve the same consistency issue simultaneously.
 
 === Propose Inline Code Improvements
 
-The third goal extends Artemis from detecting consistency issues to supporting resolution through suggested inline code changes. Each consistency check can return structured modification proposals in addition to issue descriptions. Each proposal defines a file path, an affected line range, and a replacement snippet. Artemis stores this proposal with the issue so the editor can present side-by-side previews.
+The third goal extends Artemis from detecting consistency issues to supporting resolution through suggested inline code changes. Each consistency check can return structured modification proposals in addition to consistency-issue descriptions. Each suggested code change defines a file path, an affected line range, and a replacement snippet. Artemis stores this data with the consistency issue so the editor can present side-by-side previews.
 
-The workflow lets instructors and editors apply or discard suggested changes directly in the editor. When a user accepts a change, Artemis updates the file and creates a new exercise version. Validation and conflict checks ensure that each proposal still matches the current file state. This approach reduces repetitive editing and keeps human review focused on conceptual correctness.
+The workflow lets instructors and editors apply or discard suggested changes directly in the editor. When a user accepts a change, Artemis updates the file and creates a new exercise version. Validation and conflict checks ensure that each suggested code change still matches the current file state. This approach reduces repetitive editing and keeps human review focused on conceptual correctness.
 
 == Outline
 #TODO[

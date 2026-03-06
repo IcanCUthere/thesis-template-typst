@@ -43,7 +43,7 @@ In cases of conflict, the system follows an instructor/editor-first principle: r
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
 The subsystem decomposition shown in #ref(<SubsystemDecompCombined>) is driven by two architectural priorities: keeping editor interaction responsive for instructors and editors, and isolating persistence and AI-assisted processing so each concern can evolve independently.
-At a high level, the client subsystem provides interaction services (inline review display, comment actions, issue navigation, and consistency-check initiation), while the server subsystem provides persistence, synchronization, version-aware anchor maintenance, and consistency-issue processing.
+At a high level, the client subsystem provides interaction services (inline review display, comment actions, consistency-issue navigation, and consistency-check initiation), while the server subsystem provides persistence, synchronization, version-aware anchor maintenance, and consistency-issue processing.
 
 #par(first-line-indent: 0pt)[*Client Side*]
 On the client side, the decomposition separates interaction-focused UI components from the service interfaces they use to communicate with the server. CodeEditor, ProblemStatementEditor, FileBrowser, and ExerciseContainer remain focused on editing, navigation, and exercise interaction, while ReviewCommentManager centralizes review-comment behavior across these views. This keeps review-comment handling decoupled from the individual UI components and makes the editor behavior easier to test and evolve.
@@ -94,7 +94,7 @@ From an operational perspective, the subsystem reuses Artemis database infrastru
 #TODO[
   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
 ]
-The review system restricts all review actions to instructors and editors. Only users with instructor or editor permissions can view review threads, create or edit comments, resolve or discard issues, run consistency checks, and apply suggested code changes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
+The review system restricts all review actions to instructors and editors. Only users with instructor or editor permissions can view review threads, create or edit comments, resolve or discard consistency issues, run consistency checks, and apply suggested code changes. This restriction aligns review actions with teaching responsibility and avoids accidental changes by students or tutors.
 
 Access control follows existing Artemis authorization rules for programming exercises. Review threads inherit the same access scope as the exercise and its repository, so only instructors and editors assigned to the exercise can access the data. Server-side endpoints in ReviewResource and ConsistencyCheckResource enforce these checks, and the client only exposes review UI elements when the user has the required role. #ref(<AccessRightsMatrix>) summarizes the role-based access rights for the core review and consistency check functions.
 
@@ -129,7 +129,7 @@ The runtime processes requests and live notifications concurrently. This is impo
 The client synchronization logic keeps shared state stable by handling delayed or repeated updates safely. Temporary differences between open views are resolved without corrupting state, so the workflow remains eventually consistent during concurrent work.
 
 /*
-== Boundry Conditions
+== Boundary Conditions
 #TODO[
   Optional section describing the use cases how to start up the separate components of the system, how to shut them down, and what to do if a component or the system fails.
 ]

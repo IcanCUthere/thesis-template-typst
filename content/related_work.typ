@@ -5,7 +5,7 @@
   Describe related work regarding your topic and emphasize your (scientific) contribution in contrast to existing approaches / concepts / workflows. Related work is usually current research by others and you defend yourself against the statement: “Why is your thesis relevant? The problem was al- ready solved by XYZ.” If you have multiple related works, use subsections to separate them.
 ]
 
-This chapter reviews prior work in four areas that are directly relevant to this thesis: human-in-the-loop grading workflows, LLM-supported authoring, and instructor-facing AI assistance, followed by the resulting research gap. This structure clarifies how existing approaches inform the design decisions and contribution of this work.
+This chapter reviews prior work in four areas that are directly relevant to this thesis: human-in-the-loop grading workflows, LLM-supported authoring, instructor-facing AI assistance, and the remaining research gap. This structure clarifies how existing approaches inform the design decisions and contribution of this work.
 
 == Human-in-the-Loop Grading Workflows
 
@@ -23,8 +23,8 @@ Instructor-facing support systems extend beyond grading and authoring into daily
 
 == Research Gap and Thesis Positioning
 
-The reviewed literature establishes important building blocks for AI-supported education, but it treats them mostly in isolation. Grading papers focus on feedback quality and agreement, authoring papers focus on generating candidate material, and instructor-support papers focus on assistance in specific teaching tasks. These lines of work confirm the value of human oversight, yet they rarely model a complete authoring workflow from issue detection to final result.
+The reviewed literature establishes important building blocks for AI-supported education, but it treats them mostly in isolation. Grading papers focus on feedback quality and agreement, authoring papers focus on generating candidate material, and instructor-support papers focus on assistance in specific teaching tasks. These lines of work confirm the value of human oversight, yet they rarely model a complete authoring workflow from issue detection to final resolution.
 
 This separation creates a concrete gap for programming-exercise development. Existing work does not connect multi-artifact consistency checking (problem statement, template, solution, and tests) with a persistent discussion mechanism that links findings to concrete file locations, supports explicit thread states, and remains stable across exercise versions. The reviewed papers also do not integrate suggested edits into one controlled workflow in which instructors and editors can compare, apply, reject, and trace changes inside the same review context.
 
-This thesis positions its contribution at the workflow level rather than at the model level. The system integrates consistency-issue detection with persistent review comments, inline navigation, controlled code-change application, and traceable decision history in Artemis. Instructors and editors remain responsible for final decisions, while the system reduces mechanical review effort and preserves a clear audit trail across collaborative iterations.
+This thesis positions its contribution at the workflow level rather than at the model level. The system integrates consistency-issue detection with persistent review comments, consistency-issue navigation, controlled code-change application, and traceable decision history in Artemis. Instructors and editors remain responsible for final decisions, while the system reduces mechanical review effort and preserves a clear audit trail across collaborative iterations.
