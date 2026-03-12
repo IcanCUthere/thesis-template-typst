@@ -31,7 +31,7 @@ This section summarizes the implementation status of the functional requirements
     [FR9], [Update Thread Line References for New Exercise Versions], [✓],
     [FR10], [Mark Threads as Outdated on Content Changes], [✓],
     [FR11], [Propagate Review Updates to Active Clients], [✓],
-    [FR12], [Create Review Comments from Consistency Checks], [✓],
+    [FR12], [Create Review Threads from Consistency Checks], [✓],
     [FR13], [Provide Code-Change Previews], [✓],
     [FR14], [Apply Suggested Code Changes], [✓],
     [FR15], [Validate Suggested Code Changes], [✓],
@@ -51,7 +51,7 @@ This subsection summarizes the realized goals listed in Table #ref(<FRStatusTabl
 The core review workflow is implemented end-to-end. Instructors and editors can create threads, add and edit comments, reply in existing threads, and resolve threads in the editor workflow (FR1-FR6, FR8). Review threads and comments are stored persistently in the database with exercise linkage and lifecycle state, so review context remains available across sessions (FR2). Inline thread rendering is integrated into the editor view and uses line-based positioning (FR6). Thread visibility controls are available in collapsed form (FR7). When new exercise versions are created, thread line references are remapped to updated line positions, and threads are marked outdated when context mapping indicates that the original line context is no longer reliable (FR9-FR10). For collaborative work, updates to threads and comments are propagated to other active clients so concurrent reviewers stay synchronized (FR11). Existing backend integration tests and frontend service/component tests cover the central paths of this functionality.
 
 #par(first-line-indent: 0pt)[*Consistency-Check Functionality (FR12-FR16)*]
-The consistency-specific workflow is integrated into the same review model. Findings from consistency checks are transformed into review comments and linked to affected file locations (FR12). For suggested changes, the system provides a preview workflow and allows instructors and editors to apply updates in a controlled way after validating that the proposed change still matches the current context (FR13-FR15).
+The consistency-specific workflow is integrated into the same review model. Consistency issues from consistency checks are transformed into review threads, with issue details in the initial consistency comments, and linked to affected file locations (FR12). For suggested changes, the system provides a preview workflow and allows instructors and editors to apply updates in a controlled way after validating that the proposed change still matches the current context (FR13-FR15).
 
 === Open Goals
 #TODO[
@@ -69,7 +69,7 @@ FR16 (consistency issue overview and navigation) is also partially fulfilled. Th
 
 This thesis integrates a review system into the Artemis programming exercise editor and turns consistency-related work into a structured, persistent workflow for instructors and editors. Instead of handling raw check output manually, instructors and editors can review consistency issues in context, collaborate through threads, and track resolution state across ongoing exercise refinement.
 
-In addition, the thesis integrates consistency-check findings into the same review system, including consistency-issue visualization, controlled handling of suggested code changes, and navigation support. This improves transparency and reduces repetitive manual effort while keeping final decisions under human control. Overall, the implemented workflow represents a first step toward more automated exercise creation in Artemis, with clear opportunities for further expansion.
+In addition, the thesis integrates consistency issues from consistency checks into the same review system, including consistency-issue visualization, controlled handling of suggested code changes, and navigation support. This improves transparency and reduces repetitive manual effort while keeping final decisions under human control. Overall, the implemented workflow represents a first step toward more automated exercise creation in Artemis, with clear opportunities for further expansion.
 
 == Future Work
 #TODO[
@@ -78,6 +78,6 @@ In addition, the thesis integrates consistency-check findings into the same revi
 
 Future work should first close the remaining gaps of this thesis, especially the partially fulfilled requirements in Table #ref(<FRStatusTable>). This includes full thread-visibility control in the editor (beyond collapsing) and a unified, configurable overview that supports navigation across all thread types.
 
-Beyond these near-term completions, the long-term direction is broader automation of exercise creation workflows. One next step is comment-driven expansion, where instructors and editors can write intent as review comments and let the system generate coordinated updates across the problem statement, template, solution, and tests.
+Beyond these near-term completions, the long-term direction is broader automation of exercise creation workflows. One next step is comment-driven expansion, where instructors and editors can write intent as comments in review threads and let the system generate coordinated updates across the problem statement, template, solution, and tests.
 
-An additional step is a more autonomous consistency workflow: after running a consistency check, the system could apply selected fixes automatically and leave review comments that document what changed and why. In this direction, review comments evolve from a purely manual discussion tool into a structured control and traceability layer for increasingly automated exercise creation.
+An additional step is a more autonomous consistency workflow: after running a consistency check, the system could apply selected fixes automatically and leave review threads that document what changed and why through their initial consistency comments and follow-up discussion. In this direction, review threads evolve from a purely manual discussion tool into a structured control and traceability layer for increasingly automated exercise creation.
