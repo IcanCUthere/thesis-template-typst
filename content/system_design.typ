@@ -5,7 +5,7 @@
   This chapter follows the System Design Document Template in @bruegge2004object. You describe in this chapter how you map the concepts of the application domain to the solution domain. Some sections are optional, if they do not apply to your problem. Cite @bruegge2004object several times in this chapter.
 ]
 
-In this chapter, we map the concepts of the application domain to the solution domain. Following the System Design Document Template described by Bruegge and Dutoit #cite(<bruegge2004object>), we use analysis results, including functional requirements, constraints, and quality attributes, to guide architectural decisions. The goal of this chapter is to establish the technical structure that enables the implementation of the required features. We describe the overall architecture of the review workflow in Artemis, outline the design goals derived from the quality attributes, decompose the system into subsystems, and explain how persistence and access control are realized in the solution domain.
+In this chapter, we map the concepts of the application domain to the solution domain. Following the system design document template described by Bruegge and Dutoit #cite(<bruegge2004object>), we use analysis results, including functional requirements, constraints, and quality attributes, to guide architectural decisions. The chapter first describes the review workflow architecture in Artemis and then derives prioritized design goals from these requirements. It then decomposes the system into subsystems and explains how persistence and access control are realized in the solution domain.
 
 == Overview
 #TODO[
@@ -24,26 +24,31 @@ The design goals derive from the functional requirements, quality attributes, an
 The system must provide a low-friction review experience that aligns with common tools instructors and editors already use. The architecture therefore prioritizes a threaded comment model and a sidebar-based overview navigation pattern familiar from modern review and editor interfaces, which reduces training effort and supports fast adoption. This goal ranks high because the review workflow only succeeds if instructors and editors can interpret thread context and status quickly without disrupting editing (QA1, QA2, FR6, FR7, FR16, C1).
 
 #par(first-line-indent: 0pt)[*Reliability and Safe Issue Resolution*]
-All changes must remain under instructor and editor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA3, QA4, FR8, FR14, FR15, C2). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
+All changes must remain under instructor and editor control. The design must enforce explicit confirmation, clear resolution states, and consistent behavior even when LLM output is uncertain. This goal drives decisions around thread state management, change application, and validation of suggested code changes (QA3, QA4, FR8, FR14, FR15, C3). It ranks equally high with usability because incorrect changes can compromise exercise integrity.
 
 #par(first-line-indent: 0pt)[*Persistence and Traceability*]
-Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors and editors to track decisions and collaborate effectively (FR2, FR9, FR10, QA4, C3). This goal supports auditability and reduces repeated work across iterations.
+Review artifacts must remain available across sessions and exercise versions. The architecture therefore emphasizes persistent storage for threads, resolution status, and applied fixes, enabling instructors and editors to track decisions and collaborate effectively (FR2, FR9, FR10, QA4, C2). This goal supports auditability and reduces repeated work across iterations.
 
 #par(first-line-indent: 0pt)[*Performance and Responsiveness*]
 The system must remain responsive while handling multiple threads, overview filters, and LLM requests. The architecture favors efficient state synchronization and non-blocking updates in the editor UI, so instructors and editors can continue working while data loads (QA5, QA6, C4). Performance is important, but it does not outweigh correctness and usability.
 
 #par(first-line-indent: 0pt)[*Modularity and Extensibility*]
-The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA7, QA8, C1, C3). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
+The design should allow independent evolution of the review workflow, LLM integration, and UI components. Clear subsystem boundaries and well-defined interfaces enable future comment types, new review sources, or alternative LLM services without restructuring the core system (QA7, QA8, C1, C2). Modularity ranks after usability and reliability but remains essential for long-term maintainability.
 
 #par(first-line-indent: 0pt)[*Prioritization and Trade-offs*]
-In cases of conflict, the system follows an instructor/editor-first principle: reliability and correctness take precedence over speed, and clarity of review threads and comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with role and prompt constraints (C2, C4) and human-in-the-loop requirements.
+In cases of conflict, the system follows an instructor/editor-first principle: reliability and correctness take precedence over speed, and clarity of review threads and comments takes precedence over aggressive automation. The design favors stable, comprehensible workflows over maximum LLM autonomy, aligning architectural choices with role and prompt constraints (C3, C4) and human-in-the-loop requirements.
 
 == Subsystem Decomposition
 #TODO[
   Describe the architecture of your system by decomposing it into subsystems and the services provided by each subsystem. Use UML class diagrams including packages / components for each subsystem.
 ]
-The subsystem decomposition shown in #ref(<SubsystemDecompCombined>) is driven by two architectural priorities: keeping editor interaction responsive for instructors and editors, and isolating persistence and AI-assisted processing so each concern can evolve independently.
-At a high level, the client subsystem provides interaction services (inline review display, comment actions, consistency-issue navigation, and consistency-check initiation), while the server subsystem provides persistence, synchronization, version-aware anchor maintenance, and consistency-issue processing.
+The subsystem decomposition shown in #ref(<SubsystemDecompCombined>) follows two integration priorities for this thesis: keeping editor interaction responsive for instructors and editors, and preserving the existing separation between review logic, persistence, and AI-assisted consistency checking.
+At a high level, the client subsystem provides interaction services (inline review display, comment actions, consistency-issue navigation, and consistency-check initiation), while the server subsystem provides review-state persistence and synchronization, version-aware anchor remapping during exercise versioning, and consistency-issue processing through Hyperion.
+
+#figure(
+  image("../figures/SubDecompCombined.pdf", width: 95%),
+  caption: [Combined Subsystem Decomposition. The diagram shows how client components, server workflows, persistence, and Hyperion integration interact in the review architecture.],
+) <SubsystemDecompCombined>
 
 #par(first-line-indent: 0pt)[*Client Side*]
 On the client side, the decomposition separates interaction-focused UI components from the service interfaces they use to communicate with the server. CodeEditor, ProblemStatementEditor, FileBrowser, and ExerciseContainer remain focused on editing, navigation, and exercise interaction, while ReviewCommentManager centralizes review-thread behavior across these views. This keeps review-thread handling and comment handling decoupled from the individual UI components and makes the editor behavior easier to test and evolve.
@@ -54,11 +59,6 @@ The client communicates with the server through three dedicated interfaces with 
 On the server side, the decomposition separates review-state management, versioning, and AI-assisted checking into distinct components. ExerciseReview owns the core review workflow and manages review data exchanged with the client. ExerciseVersioning handles version creation as an explicit workflow step and then invokes ExerciseReview to remap comment anchors to the new file state; if remapping fails or context has changed significantly, ExerciseReview marks the affected comments as outdated. Hyperion handles consistency checks and feeds their results back into the review workflow. This keeps domain responsibilities explicit and avoids hidden coupling between review-state management, version creation, and automated analysis.
 
 Artemis already provides the separation between persistence and LLM integration through DataService and PromptService. This thesis reuses these existing boundaries and integrates the review workflow through ExerciseReview, ExerciseVersioning, and Hyperion interfaces. The contribution in this section is therefore not the separation itself, but the integration contract across these components: Hyperion consistency issues are transformed into review threads with initial consistency comments, version creation triggers anchor remapping and outdated-state handling, and thread-state changes are propagated through the synchronization path to active clients.
-
-#figure(
-  image("../figures/SubDecompCombined.pdf", width: 95%),
-  caption: [Combined Subsystem Decomposition. The diagram shows how client components, server workflows, persistence, and Hyperion integration interact in the review architecture.],
-) <SubsystemDecompCombined>
 
 /*
 == Hardware Software Mapping
@@ -75,7 +75,12 @@ The implementation follows the established Artemis tech stack: Angular on the cl
   Optional section that describes how data is saved over the lifetime of the system and which data. Usually this is either done by saving data in structured files or in databases. If this is applicable for the thesis, describe the approach for persisting data here and show a UML class diagram how the entity objects are mapped to persistent storage. It contains a rationale of the selected storage scheme, file system or database, a description of the selected database and database administration issues.
 ]
 
-The review workflow stores its data in Artemis's relational database so that review information remains available across sessions and across exercise versions. Figure #ref(<DB>) shows that the persistence model centers on three entities: ThreadGroup, CommentThread, and Comment. ThreadGroup organizes related threads within one exercise, CommentThread stores the thread line reference and lifecycle state, and Comment stores the individual discussion entries and consistency-check outputs.
+The review workflow stores its data in Artemis's relational database so that review information remains available across sessions and across exercise versions. #ref(<DB>) shows that the persistence model centers on three entities: ThreadGroup, CommentThread, and Comment. ThreadGroup organizes related threads within one exercise, CommentThread stores the thread line reference and lifecycle state, and Comment stores the individual discussion entries and consistency-check outputs.
+
+#figure(
+  image("../figures/Database.pdf", width: 95%),
+  caption: [Review Persistence Database Schema. The schema maps thread groups, threads, and comments to exercises and versions for traceable review history.],
+) <DB>
 
 CommentThread is linked to the corresponding ProgrammingExercise and, where needed, to an ExerciseVersion. In addition to the thread state (for example resolved and outdated), the model stores line-reference metadata such as repository target, file path, line number, and initial version/commit references. This allows the system to keep review context stable even when the exercise evolves. Comments are linked to a thread and an optional author, and consistency-related comment content can carry both a human-readable fix description and an optional suggested inline code change.
 
@@ -84,11 +89,6 @@ Over the lifetime of the system, data is written at the moment instructors or ed
 The storage approach combines two ideas. Core review data, such as ownership, references, and thread state, is stored in relational tables. This keeps relationships and queries reliable. At the same time, comment-specific consistency data is stored in structured payload fields, so new consistency-comment details can be added without changing the database schema for every small extension. This combination keeps the model stable while still allowing gradual feature growth.
 
 From an operational perspective, the subsystem reuses Artemis database infrastructure and migration process. Schema changes are managed through Liquibase changelogs, and the same model supports the existing Artemis database setups (for example MySQL and PostgreSQL profiles). For administration, this means the review data follows the same backup, migration, and monitoring workflows as the rest of the platform, with particular attention to thread/comment relations and version references.
-
-#figure(
-  image("../figures/Database.pdf", width: 95%),
-  caption: [Review Persistence Database Schema. The schema maps thread groups, threads, and comments to exercises and versions for traceable review history.],
-) <DB>
 
 == Access Control
 #TODO[

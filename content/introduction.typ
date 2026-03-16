@@ -24,11 +24,13 @@ Students depend on coherent exercises for effective learning. Consistency issues
 #TODO[
   Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
 ]
-An interactive and persistent workflow can turn static LLM output into actionable feedback. Inline review threads and structured overviews help instructors and editors identify and prioritize consistency issues quickly. Persistent storage keeps review progress available across sessions and exercise versions.
+These limitations motivate a workflow that helps instructors and editors resolve consistency issues efficiently and transparently. A practical review workflow can transform static LLM output into decisions that instructors and editors can execute directly. Clear in-context presentation and overviews help teams identify and prioritize consistency issues without repeatedly translating raw output into concrete actions.
 
-Suggested code changes further reduce manual editing effort. Instructors and editors can preview and apply changes directly in the exercise editor while retaining full control over final decisions.
+Persistent tracking across exercise revisions strengthens collaborative quality assurance. Instructors and editors can document decisions, revisit unresolved consistency issues, and coordinate follow-up actions over time. This traceability supports consistent review standards across shared authoring workflows.
 
-These improvements let instructors and editors focus on pedagogical refinement instead of repetitive consistency checks. Students benefit indirectly through clearer and more coherent exercises that support focused problem solving and conceptual understanding.
+Automatic correction support can reduce repetitive editing while preserving human judgment. Instructors and editors can evaluate each proposed change against exercise intent, accept proposals that improve alignment, and reject proposals that conflict with pedagogical goals.
+
+These capabilities shift effort from mechanical interpretation to educational design. Instructors and editors can focus on learning outcomes, task clarity, and assessment alignment. Students benefit from more coherent exercises and can focus on problem solving instead of resolving avoidable consistency issues.
 
 == Objectives
 #TODO[
@@ -45,7 +47,7 @@ The first goal enhances how Artemis presents consistency check results and makes
 
 Each generated thread starts with a consistency comment that describes the consistency issue, provides a fix rationale, and marks affected lines with a severity level. When instructors and editors rerun a consistency check, Artemis updates existing threads, removes resolved consistency issues, and keeps the displayed feedback aligned with the current exercise state.
 
-A dropdown overview summarizes all detected consistency issues. Instructors and editors can inspect severity, affected files, and line ranges, and they can filter or sort by severity, component, or issue category. This overview supports faster prioritization and clearer tracking of resolved and unresolved work.
+An overview summarizes all detected consistency issues. Instructors and editors can inspect severity, affected files, and line ranges, and they can filter or sort by severity, component, or issue category. This overview supports faster prioritization and clearer tracking of resolved and unresolved work.
 
 === Implement Persistent Storage and Collaboration
 
