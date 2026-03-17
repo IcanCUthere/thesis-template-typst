@@ -51,7 +51,7 @@ This section specifies the functional requirements of the review workflow. Each 
 - *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the referenced line location and provide navigation between threads.
 - *FR7 Hide Review Threads in the Editor:* The system shall allow instructors and editors to hide review threads in the editor view to reduce visual obstruction while editing code.
 - *FR8 Mark Threads as Resolved:* The system shall allow instructors and editors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
-- *FR9 Update Thread Line References for New Exercise Versions:* The system shall update thread line references when a new exercise version is created so existing threads remain linked to the correct locations in the updated files.
+- *FR9 Update Thread Line References for New Exercise Versions:* The system shall update thread line references when instructors or editors create a new exercise version so existing threads remain linked to the correct locations in the updated files.
 - *FR10 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s referenced line location has changed and mark the thread as outdated to signal that the context may no longer match.
 - *FR11 Propagate Review Updates to Active Clients:* The system shall propagate thread and comment updates to other active clients that are working on the same exercise.
 
@@ -100,7 +100,7 @@ This section details the quality attributes of the proposed system and defines c
 
 Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Following Bruegge and Dutoit, the constraints below are grouped into implementation, interface, and operations requirement categories. Packaging and legal requirement categories are currently out of scope for this thesis prototype.
 
-- *C1 Platform Constraint (Implementation Requirement):* The solution shall be implemented within the existing Artemis client-server architecture and codebase.
+- *C1 Platform Constraint (Implementation Requirement):* The implementation shall stay within the existing Artemis client-server architecture and codebase.
 - *C2 Persistence and Compatibility Constraint (Interface Requirement):* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.
 - *C3 Role Constraint (Operations Requirement):* Review functionality during operation shall be restricted to authorized teaching roles (editor level and above).
 - *C4 Prompt Data Minimization Constraint (Operations Requirement):* LLM prompts shall include only the data required for the specific consistency check, and prompt payloads shall be kept as short as possible to reduce token usage while preserving sufficient context for reliable results.

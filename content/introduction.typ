@@ -67,6 +67,6 @@ The workflow lets instructors and editors apply or discard suggested changes dir
 #TODO[
   Describe the outline of your thesis
 ]
-This thesis is structured in six chapters. Chapter 1 introduces the context of AI-assisted review in Artemis, defines the problem, and formulates the objectives. Chapter 2 presents technical and conceptual background. Chapter 3 positions the work in related research on human-in-the-loop education and AI-assisted review.
+This thesis contains six chapters. Chapter 1 introduces the context of AI-assisted review in Artemis, defines the problem, and formulates the objectives. Chapter 2 presents technical and conceptual background. Chapter 3 positions the work in related research on human-in-the-loop education and AI-assisted review.
 
 Chapter 4 analyzes requirements for a persistent review thread system, including functional requirements, quality attributes, constraints, and models. Chapter 5 develops the system architecture with design goals, subsystem decomposition, persistence, and access control. Chapter 6 summarizes the implementation status, discusses contributions, and outlines future work.
