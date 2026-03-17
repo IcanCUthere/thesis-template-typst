@@ -1,17 +1,17 @@
 #import "/utils/todo.typ": TODO
 
-= Requirements
+= Requirements <chap-requirements>
 #TODO[
   This chapter follows the Requirements Analysis Document Template in @bruegge2004object. Important: Make sure that the whole chapter is independent of the chosen technology and development platform. The idea is that you illustrate concepts, taxonomies and relationships of the application domain independent of the solution domain! Cite @bruegge2004object several times in this chapter.
 
 ]
-This chapter examines the requirements for integrating AI-assisted review into Artemis. We follow the design process described by Bruegge and Dutoit #cite(<bruegge2004object>). First, we define the scope and highlight the major objectives of the proposed system. We then describe the existing system before detailing the functional requirements and quality attributes in the Proposed System section. Finally, the System Models section describes system models to illustrate the concepts further.
+This chapter examines the requirements for integrating AI-assisted review into Artemis. This chapter follows the design process described by Bruegge and Dutoit #cite(<bruegge2004object>). First, this chapter defines the scope and highlights the major objectives of the proposed system. It then describes the existing system before detailing the functional requirements and quality attributes in the Proposed System section. Finally, the System Models section describes system models to illustrate the concepts further.
 
 == Overview
 #TODO[
   Provide a short overview about the purpose, scope, objectives and success criteria of the system that you like to develop.
 ]
-This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors and editors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review threads. Its scope covers detecting consistency issues across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review thread system with persistence across exercise versions, provide clear inline consistency-issue presentation and navigation, and enable instructors and editors to preview and apply suggested code changes under human control. The system is considered successful if it reduces review effort and improves transparency of consistency issues.
+This section summarizes the purpose and scope of the proposed system and outlines its objectives and success criteria. The system aims to support instructors and editors in reviewing programming exercises by turning LLM-based consistency checks into persistent, actionable review threads. Its scope covers detecting consistency issues across problem statement, template, solution, and tests, and managing their review lifecycle within Artemis. The objectives are to introduce a review thread system with persistence across exercise versions, provide clear inline consistency-issue presentation and navigation, and enable instructors and editors to preview and apply suggested code changes under human control. This thesis considers the system successful when it reduces review effort and improves transparency of consistency issues.
 
 == Existing System
 #TODO[
@@ -98,7 +98,7 @@ This section details the quality attributes of the proposed system and defines c
 
 ]
 
-Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Following Bruegge and Dutoit, the constraints below are grouped into implementation, interface, and operations requirement categories. Packaging and legal requirement categories are currently out of scope for this thesis prototype.
+Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Bruegge and Dutoit group constraints into implementation, interface, and operations requirement categories, and this thesis uses the same grouping below. Packaging and legal requirement categories are currently out of scope for this thesis prototype.
 
 - *C1 Platform Constraint (Implementation Requirement):* The implementation shall stay within the existing Artemis client-server architecture and codebase.
 - *C2 Persistence and Compatibility Constraint (Interface Requirement):* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.

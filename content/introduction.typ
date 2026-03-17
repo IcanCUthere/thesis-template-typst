@@ -1,6 +1,6 @@
 #import "/utils/todo.typ": TODO
 
-= Introduction
+= Introduction <chap-introduction>
 #TODO[
   Introduce the topic of your thesis, e.g. with a little historical overview.
 ]
@@ -12,11 +12,11 @@ Artemis now supports instructors and editors with AI-assisted review workflows. 
 #TODO[
   Describe the problem that you like to address in your thesis to show the importance of your work. Focus on the negative symptoms of the currently available solution.
 ]
-Artemis already uses LLMs to generate exercises, but review and refinement still rely on manual work. Instructors and editors can run a consistency check, yet Artemis only shows the result as formatted JSON. They must interpret each entry, locate the affected files and lines, and apply corrections manually.
+Artemis supports LLM-based consistency checks, but review and refinement still rely on manual work. The platform only shows the results as formatted JSON. Instructors and editors must interpret each entry, locate the affected files and lines, and apply corrections manually.
 
 This workflow consumes time, introduces avoidable errors, and scales poorly for complex exercises. Artemis also lacks a persistent review thread system for consistency issues, so teams cannot track issue history reliably across exercise versions.
 
-When the page reloads or the exercise version changes, Artemis discards detected consistency issues and forces users to rerun the check. This repeated effort pulls instructors and editors away from pedagogical improvements and makes consistent quality harder to maintain.
+When the page reloads or the exercise version changes, Artemis discards detected consistency issues and forces users to rerun the check. This repeated effort pulls instructors and editors away from pedagogical improvements, makes consistent quality harder to maintain, and adds unnecessary costs because each rerun sends additional requests to LLM providers.
 
 Students depend on coherent exercises for effective learning. Consistency issues between the problem statement, template, solution, and tests can confuse students, increase cognitive load, and weaken learning outcomes.
 
@@ -24,7 +24,7 @@ Students depend on coherent exercises for effective learning. Consistency issues
 #TODO[
   Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
 ]
-These limitations motivate a workflow that helps instructors and editors resolve consistency issues efficiently and transparently. A practical review workflow can transform static LLM output into decisions that instructors and editors can execute directly. Clear in-context presentation and overviews help teams identify and prioritize consistency issues without repeatedly translating raw output into concrete actions.
+These limitations motivate a workflow that helps instructors and editors resolve consistency issues efficiently and transparently. A practical review workflow can transform raw LLM consistency-check JSON data into decisions that instructors and editors can execute directly. Clear in-context presentation and overviews help teams identify and prioritize consistency issues without repeatedly translating raw output into concrete actions.
 
 Persistent tracking across exercise revisions strengthens collaborative quality assurance. Instructors and editors can document decisions, revisit unresolved consistency issues, and coordinate follow-up actions over time. This traceability supports consistent review standards across shared authoring workflows.
 
@@ -67,6 +67,6 @@ The workflow lets instructors and editors apply or discard suggested changes dir
 #TODO[
   Describe the outline of your thesis
 ]
-This thesis contains six chapters. Chapter 1 introduces the context of AI-assisted review in Artemis, defines the problem, and formulates the objectives. Chapter 2 presents technical and conceptual background. Chapter 3 positions the work in related research on human-in-the-loop education and AI-assisted review.
+This thesis contains six chapters. #ref(<chap-introduction>) introduces the context of AI-assisted review in Artemis, defines the problem, and formulates the objectives. #ref(<chap-background>) presents technical and conceptual background. #ref(<chap-related-work>) positions the work in related research on human-in-the-loop education and AI-assisted review.
 
-Chapter 4 analyzes requirements for a persistent review thread system, including functional requirements, quality attributes, constraints, and models. Chapter 5 develops the system architecture with design goals, subsystem decomposition, persistence, and access control. Chapter 6 summarizes the implementation status, discusses contributions, and outlines future work.
+#ref(<chap-requirements>) analyzes requirements for a persistent review thread system, including functional requirements, quality attributes, constraints, and models. #ref(<chap-architecture>) develops the system architecture with design goals, subsystem decomposition, persistence, and access control. #ref(<chap-summary>) summarizes the implementation status, discusses contributions, and outlines future work.

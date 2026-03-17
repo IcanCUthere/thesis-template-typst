@@ -1,6 +1,6 @@
 #import "/utils/todo.typ": TODO
 
-= Background
+= Background <chap-background>
 #TODO[
   Describe each proven technology / concept shortly that is important to understand your thesis. Point out why it is interesting for your thesis. Make sure to incorporate references to important literature here.
 ]
@@ -13,11 +13,11 @@ This chapter introduces the background concepts needed to understand the problem
 ]
 Artemis is a learning platform for programming education that combines interactive exercises with automatic assessment and continuous feedback #cite(<Krusche2018284>). In Artemis, programming exercises use a set of artifacts that specify the task and its assessment. Concretely, each programming exercise consists of a problem statement and a set of version-controlled repositories: a template repository that provides starter code and the interface that students implement, a solution repository that contains the reference implementation, and a test repository that encodes the executable grading criteria #cite(<Dietrich2025>). Depending on the exercise and course setup, course teams can attach additional auxiliary repositories. Consistency across these artifacts matters because consistency issues can confuse learners and can distort assessment outcomes #cite(<Dietrich2025>).
 
-Artemis uses roles to decide who can do what in different situations, for example when editing exercises or discussing consistency issues. The most relevant roles in this thesis are:
+Artemis uses roles to decide who can do what in different situations, for example when editing exercises or managing course content. The most relevant roles in this thesis are:
 - Admins: manage the platform globally and can override course-level restrictions when needed.
 - Instructors: create and configure exercises, and can also perform editor-level review actions.
-- Editors: modify exercise content and work with consistency-review threads.
-- Students: solve exercises and view student-facing content, but are not part of the review workflow.
+- Editors: create and maintain lectures, and modify exercise content.
+- Students: solve exercises and view student-facing content.
 
 == Hyperion and Consistency Checking
 #TODO[

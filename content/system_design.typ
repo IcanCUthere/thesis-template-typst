@@ -1,6 +1,6 @@
 #import "/utils/todo.typ": TODO
 
-= Architecture
+= Architecture <chap-architecture>
 #TODO[
   This chapter follows the System Design Document Template in @bruegge2004object. You describe in this chapter how you map the concepts of the application domain to the solution domain. Some sections are optional, if they do not apply to your problem. Cite @bruegge2004object several times in this chapter.
 ]
@@ -84,11 +84,11 @@ The review workflow stores its data in Artemis's relational database so that rev
 
 CommentThread is linked to the corresponding ProgrammingExercise and, where needed, to an ExerciseVersion. In addition to the thread state (for example resolved and outdated), the model stores line-reference metadata such as repository target, file path, line number, and initial version/commit references. This allows the system to keep review context stable even when the exercise evolves. Comments are linked to a thread and an optional author, and consistency-related comment content can carry both a human-readable fix description and an optional suggested inline code change.
 
-Over the lifetime of the system, data is written at the moment instructors or editors create threads/comments or update thread states, and it is cleaned up according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
+Over the lifetime of the system, Artemis writes review data when instructors or editors create threads/comments or update thread states, and Artemis cleans up review data according to ownership boundaries. In practice, this means that removing all comments from a thread removes the thread as well, and exercise-level deletion removes dependent review data. This behavior keeps the review model consistent with the lifecycle of its parent exercise while avoiding orphaned records.
 
 The storage approach combines two ideas. Core review data, such as ownership, references, and thread state, is stored in relational tables. This keeps relationships and queries reliable. At the same time, comment-specific consistency data is stored in structured payload fields, so new consistency-comment details can be added without changing the database schema for every small extension. This combination keeps the model stable while still allowing gradual feature growth.
 
-From an operational perspective, the subsystem reuses Artemis database infrastructure and migration process. Schema changes are managed through Liquibase changelogs, and the same model supports the existing Artemis database setups (for example MySQL and PostgreSQL profiles). For administration, this means the review data follows the same backup, migration, and monitoring workflows as the rest of the platform, with particular attention to thread/comment relations and version references.
+From an operational perspective, the subsystem reuses Artemis database infrastructure and migration process. Artemis manages schema changes through Liquibase changelogs, and the same model supports the existing Artemis database setups (for example MySQL and PostgreSQL profiles). For administration, this means the review data follows the same backup, migration, and monitoring workflows as the rest of the platform, with particular attention to thread/comment relations and version references.
 
 == Access Control
 #TODO[

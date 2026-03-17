@@ -1,6 +1,6 @@
 #import "/utils/todo.typ": TODO
 
-= Related Work
+= Related Work <chap-related-work>
 #TODO[
   Describe related work regarding your topic and emphasize your (scientific) contribution in contrast to existing approaches / concepts / workflows. Related work is usually current research by others and you defend yourself against the statement: “Why is your thesis relevant? The problem was al- ready solved by XYZ.” If you have multiple related works, use subsections to separate them.
 ]
@@ -15,7 +15,7 @@ Design-focused studies support the same conclusion. Work on formative coding ass
 
 == LLM-Supported Authoring of Assessment Material
 
-A second group of studies addresses authoring of questions, exams, and related teaching material. LLMs scale drafting, but educator moderation remains necessary for pedagogical quality. Kituku et al. report year-long classroom use of generative AI (GenAI) questions with instructor moderation #cite(<Kituku2025>). Cheng et al. present TreeQuestion as a teacher-in-the-loop multiple-choice question (MCQ) authoring workflow #cite(<Cheng2024>). Cui et al. generate large candidate sets and rely on expert review for quality selection #cite(<Cui20251094>). Tyndall et al. and Nyaaba et al. show that retrieval and interactive prompting improve outcomes when teachers review final material #cite(<Tyndall2025>) #cite(<Nyaaba2025>).
+A second group of studies addresses authoring of questions, exams, and related teaching material. LLMs scale drafting, but educator moderation remains necessary for pedagogical quality. Kituku et al. report year-long classroom use of generative AI (GenAI) questions with instructor moderation #cite(<Kituku2025>). Cheng et al. present TreeQuestion as a teacher-in-the-loop multiple-choice question (MCQ) authoring workflow #cite(<Cheng2024>). Cui et al. generate large candidate sets and rely on expert review for quality selection #cite(<Cui20251094>). Tyndall et al. report higher exam-answer accuracy and coherence when models retrieve relevant source material before answering instead of relying only on pre-trained knowledge #cite(<Tyndall2025>). Nyaaba et al. report lesson plans with stronger cultural and contextual alignment when teachers provide structured interactive input before generation #cite(<Nyaaba2025>).
 
 == Instructor-Facing AI Assistance
 
