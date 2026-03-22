@@ -15,7 +15,7 @@ Artemis is a learning platform for programming education that combines interacti
 
 Artemis uses roles to decide who can do what in different situations, for example when editing exercises or managing course content. The most relevant roles in this thesis are:
 - Admins: manage the platform globally and can override course-level restrictions when needed.
-- Instructors: create and configure exercises, and can also perform editor-level review actions.
+- Instructors: create and configure exercises, and can also perform editor-level actions.
 - Editors: create and maintain lectures, and modify exercise content.
 - Students: solve exercises and view student-facing content.
 
@@ -23,9 +23,9 @@ Artemis uses roles to decide who can do what in different situations, for exampl
 #TODO[
   Describe how large language models are used to detect consistency issues in multi-file artifacts, typical strengths/limitations, and why human review remains necessary.
 ]
-In Artemis, the Hyperion module bundles AI-assisted authoring features. Hyperion supports several instructor/editor workflows, including problem-statement generation and refinement, rewriting of frequently asked questions (FAQs), code-generation support, and consistency checks for programming exercises. Prior work documents the consistency-check workflow in detail #cite(<Dietrich2025>). This thesis follows up on this workflow.
+In Artemis, the Hyperion module bundles AI-assisted authoring features. Hyperion supports several instructor/editor workflows, including problem-statement generation and refinement, rewriting of frequently asked questions (FAQs), code-generation support, and consistency checks for programming exercises. Prior work documents the workflow for consistency checks in detail #cite(<Dietrich2025>). This thesis follows up on this workflow.
 
-When a consistency check is triggered, Artemis sends the exercise context to Hyperion. Hyperion builds a snapshot of relevant artifacts and runs checks for structural and semantic consistency issues #cite(<Dietrich2025>). Hyperion returns structured consistency issues with severity, category, location, and suggested-fix information. Hyperion filters irrelevant files, combines multiple analysis steps, and handles partial failures without aborting the whole request. This approach detects cross-artifact consistency issues that syntax-only tooling often misses, because it compares specification meaning with code and test behavior #cite(<Dietrich2025>). For example, Hyperion can flag cases where the problem statement specifies one behavior but the template or tests enforce another. Hyperion outputs remain proposals, and instructors or editors decide what to do with it.
+When Artemis triggers a consistency check, Artemis sends the exercise context to Hyperion. Hyperion builds a snapshot of relevant artifacts and runs structural and semantic consistency checks #cite(<Dietrich2025>). Hyperion returns structured consistency issues with severity, category, location, and suggested-fix information. Hyperion filters irrelevant files, combines multiple analysis steps, and handles partial failures without aborting the whole request. This approach detects cross-artifact consistency issues that syntax-only tooling often misses, because it compares specification meaning with code and test behavior #cite(<Dietrich2025>). For example, Hyperion can flag cases where the problem statement specifies one behavior but the template or tests enforce another. Hyperion produces proposals, and instructors or editors decide what to do with them.
 
 == Human-in-the-Loop in Machine Learning
 #TODO[

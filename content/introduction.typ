@@ -6,7 +6,7 @@
 ]
 Artemis is a learning platform widely used in higher education to support programming education through interactive exercises and automatic assessment #cite(<Krusche2018284>). The platform integrates with version-controlled repositories and continuous integration systems, and recent releases add large language model (LLM) features. Through Iris, the integrated LLM-based chatbot, students can receive explanations and guidance while solving exercises #cite(<Bassner2024394>).
 
-Artemis now supports instructors and editors with AI-assisted review workflows. Each programming exercise consists of a problem statement, a template, a solution, and tests, and these artifacts must remain consistent. Artemis can query an LLM for a consistency check and receive structured JavaScript Object Notation (JSON) that describes each consistency issue, its severity, and a suggested fix description. This thesis uses the term *consistency issue* for one detected issue.
+Artemis now supports instructors and editors with AI-assisted review workflows. Each programming exercise consists of a problem statement, a template, a solution, and tests, and these artifacts must remain consistent. Artemis can query an LLM for a consistency check and receive structured JavaScript Object Notation (JSON) output that describes each consistency issue, its severity, and a suggested fix description. This thesis uses the term *consistency issue* for one detected issue.
 
 == Problem
 #TODO[
@@ -16,7 +16,7 @@ Artemis supports LLM-based consistency checks, but review and refinement still r
 
 This workflow consumes time, introduces avoidable errors, and scales poorly for complex exercises. Artemis also lacks a persistent review thread system for consistency issues, so teams cannot track issue history reliably across exercise versions.
 
-When the page reloads or the exercise version changes, Artemis discards detected consistency issues and forces users to rerun the check. This repeated effort pulls instructors and editors away from pedagogical improvements, makes consistent quality harder to maintain, and adds unnecessary costs because each rerun sends additional requests to LLM providers.
+When the page reloads or the exercise version changes, Artemis discards detected consistency issues and forces users to rerun the consistency check. This repeated effort pulls instructors and editors away from pedagogical improvements, makes consistent quality harder to maintain, and adds unnecessary costs because each rerun sends additional requests to LLM providers.
 
 Students depend on coherent exercises for effective learning. Consistency issues between the problem statement, template, solution, and tests can confuse students, increase cognitive load, and weaken learning outcomes.
 
@@ -24,7 +24,7 @@ Students depend on coherent exercises for effective learning. Consistency issues
 #TODO[
   Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
 ]
-These limitations motivate a workflow that helps instructors and editors resolve consistency issues efficiently and transparently. A practical review workflow can transform raw LLM consistency-check JSON data into decisions that instructors and editors can execute directly. Clear in-context presentation and overviews help teams identify and prioritize consistency issues without repeatedly translating raw output into concrete actions.
+These limitations motivate a workflow that helps instructors and editors resolve consistency issues efficiently and transparently. A practical review workflow can transform raw JSON output from a consistency check into decisions that instructors and editors can execute directly. Clear in-context presentation and overviews help teams identify and prioritize consistency issues without repeatedly translating raw output into concrete actions.
 
 Persistent tracking across exercise revisions strengthens collaborative quality assurance. Instructors and editors can document decisions, revisit unresolved consistency issues, and coordinate follow-up actions over time. This traceability supports consistent review standards across shared authoring workflows.
 
@@ -36,32 +36,34 @@ These capabilities shift effort from mechanical interpretation to educational de
 #TODO[
   Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
 ]
-The thesis defines concrete objectives that guide the implementation. Each objective targets a key improvement for exercise creation: persistent consistency checks, direct integration of suggested code changes, and intuitive support for human-in-the-loop review. The objectives are:
-+ Add Inline Comments and Navigation Options
-+ Implement Persistent Storage and Collaboration
-+ Propose Inline Code Improvements
+This thesis investigates how Artemis can integrate AI-assisted consistency feedback into programming-exercise authoring so instructors and editors can resolve issues efficiently while keeping final decision authority.
 
-=== Add Inline Comments and Navigation Options
+The objectives derive from the motivation in the previous section: instructors and editors need actionable feedback presentation, traceability across exercise revisions, and lower correction effort without surrendering control over exercise content.
 
-The first goal enhances how Artemis presents consistency check results and makes them directly actionable. Artemis currently shows only raw JSON from the LLM request, so instructors and editors must interpret the output manually. The improved interface shows detected consistency issues as inline review threads in the editor and gives immediate context during review.
+The thesis addresses the following research questions:
++ *RQ1:* How should Artemis present and structure LLM-detected consistency issues so instructors and editors can interpret, prioritize, and resolve them efficiently?
++ *RQ2:* How should Artemis preserve, synchronize, and update consistency information across exercise revisions so teams can collaborate and trace decisions over time?
++ *RQ3:* How can Artemis provide suggested code changes that reduce repetitive manual editing while preserving human control over final exercise content?
 
-Each generated thread starts with a consistency comment that describes the consistency issue, provides a fix rationale, and marks affected lines with a severity level. When instructors and editors rerun a consistency check, Artemis updates existing threads, removes resolved consistency issues, and keeps the displayed feedback aligned with the current exercise state.
+These research questions guide three operational objectives.
 
-An overview summarizes all detected consistency issues. Instructors and editors can inspect severity, affected files, and line ranges, and they can filter or sort by severity, component, or issue category. This overview supports faster prioritization and clearer tracking of resolved and unresolved work.
+=== Provide In-Context Review Support
 
-=== Implement Persistent Storage and Collaboration
+The first objective addresses RQ1. Artemis should present consistency issues as structured in-context annotations instead of raw JSON output. Each consistency issue should include a clear description, severity, rationale, and precise location context so instructors and editors can understand it without manual translation.
 
-The next goal extends Artemis data management with persistent storage for consistency issues and LLM-generated fix suggestions. Artemis currently keeps detected consistency issues only in the active client session after a consistency check.
+Artemis should additionally provide a dedicated overview for navigation and prioritization. Instructors and editors should inspect affected artifacts, filter and sort consistency issues, and navigate directly to relevant locations. This objective turns output from a consistency check into actionable review input.
 
-The server-side model adds a dedicated entity for consistency issues and links each entry to the exercise, file, and exercise version. Artemis stores the description, severity, category, suggested fix description, affected line range, and timestamps so users can query and restore consistency issues later.
+=== Enable Persistent and Collaborative Traceability
 
-This goal also adds collaborative review support. Multiple instructors and editors can review the same exercise in parallel without overwriting each other's comments. A synchronization mechanism propagates consistency-issue thread status changes, and conflict handling prevents race conditions, for example when two users try to resolve the same consistency issue simultaneously.
+The second objective addresses RQ2. Artemis should preserve consistency issues, decision states, and related context across sessions and exercise revisions. The workflow should keep enough information to restore and audit past decisions reliably.
 
-=== Propose Inline Code Improvements
+Artemis should also support concurrent review by multiple instructors and editors. Synchronization and conflict handling should keep decision states consistent during parallel work. This objective establishes a stable collaboration workflow instead of a session-local check result.
 
-The third goal extends Artemis from detecting consistency issues to supporting resolution through suggested inline code changes. Each consistency check can return structured modification proposals in addition to consistency-issue descriptions. Each suggested code change defines a file path, an affected line range, and a replacement snippet. Artemis stores this data with the consistency issue so the editor can present side-by-side previews.
+=== Support Human-Controlled Change Decisions
 
-The workflow lets instructors and editors apply or discard suggested changes directly in the editor. When a user accepts a change, Artemis updates the file and creates a new exercise version. Validation and conflict checks ensure that each suggested code change still matches the current file state. This approach reduces repetitive editing and keeps human review focused on conceptual correctness.
+The third objective addresses RQ3. Artemis should extend consistency checks with suggested code changes that instructors and editors can evaluate directly. The interface should present suggested code changes in a reviewable form so users can compare current and proposed content before deciding.
+
+Artemis should enforce explicit accept or reject decisions and validate context before applying a suggested code change. When instructors or editors accept a suggested code change, Artemis should record the decision and resulting update transparently. This objective reduces repetitive editing while keeping conceptual and pedagogical decisions with human reviewers.
 
 == Outline
 #TODO[

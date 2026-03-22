@@ -45,29 +45,29 @@ This section summarizes the implementation status of the functional requirements
   Summarize the achieved goals by repeating the realized requirements or use cases stating how you realized them.
 ]
 
-This subsection summarizes the realized goals listed in #ref(<FRStatusTable>). Two capabilities are currently only partially fulfilled (FR7 and FR16); they are briefly referenced here and discussed in detail in the Open Goals section.
+This subsection summarizes the realized goals listed in #ref(<FRStatusTable>). The current implementation only partially fulfills two capabilities (FR7 and FR16); the Open Goals section discusses them in detail.
 
 #par(first-line-indent: 0pt)[*Basic Review Functionality (FR1-FR11)*]
 The implementation covers the core review workflow end to end. Instructors and editors can create threads, add and edit comments, reply in existing threads, and resolve threads in the editor workflow (FR1-FR6, FR8). The system stores review threads and comments persistently in the database with exercise linkage and lifecycle state, so review context remains available across sessions (FR2). The editor integrates inline thread rendering and uses line-based positioning (FR6). The editor provides thread visibility controls in collapsed form (FR7). When instructors or editors create new exercise versions, the system remaps thread line references to updated line positions and marks threads as outdated when context mapping indicates that the original line context is no longer reliable (FR9-FR10). For collaborative work, the system propagates updates to threads and comments to other active clients so concurrent reviewers stay synchronized (FR11). Existing backend integration tests and frontend service/component tests cover the central paths of this functionality.
 
 #par(first-line-indent: 0pt)[*Consistency-Check Functionality (FR12-FR16)*]
-The consistency-specific workflow is integrated into the same review model. Consistency issues from consistency checks are transformed into review threads, with issue details in the initial consistency comments, and linked to affected file locations (FR12). For suggested changes, the system provides a preview workflow and allows instructors and editors to apply updates in a controlled way after validating that the proposed change still matches the current context (FR13-FR15).
+The consistency-specific workflow uses the same review model. The system converts consistency issues from consistency checks into review threads, stores the issue details in the initial consistency comments, and links the review threads to affected file locations (FR12). For suggested code changes, the system provides a preview workflow and allows instructors and editors to apply updates in a controlled way after validating that each suggested code change still matches the current context (FR13-FR15).
 
 === Open Goals
 #TODO[
   Summarize the open goals by repeating the open requirements or use cases and explaining why you were not able to achieve them. Important: It might be suspicious, if you do not have open goals. This usually indicates that you did not thoroughly analyze your problems.
 ]
 
-#ref(<FRStatusTable>) shows that two requirements remain partially fulfilled. FR7 (hide review threads in the editor) is currently only partially realized, because threads can be collapsed but not fully hidden from the editor view. Review elements therefore still occupy visible space in dense files and can interrupt continuous code editing, especially when many comments are concentrated in one area.
+#ref(<FRStatusTable>) shows that two requirements remain partially fulfilled. The current implementation only partially fulfills FR7 (hide review threads in the editor), because threads can collapse but cannot disappear completely from the editor view. Review elements therefore still occupy visible space in dense files and can interrupt continuous code editing, especially when many comments are concentrated in one area.
 
-FR16 (consistency issue overview and navigation) is also partially fulfilled. The current implementation provides a consistency-focused navigation component with previous/next traversal and severity-based ordering, but it does not provide a unified overview across all thread types or configurable ordering. This limits flexibility in larger review sessions, because different prioritization strategies cannot be applied directly and multiple UI views are still required to track all open discussion threads.
+The current implementation also partially fulfills FR16 (consistency issue overview and navigation). It provides a consistency-focused navigation component with previous/next traversal and severity-based ordering, but it does not provide a unified overview across all thread types or configurable ordering. This limits flexibility in larger review sessions, because instructors and editors cannot apply different prioritization strategies directly and still need multiple UI views to track all open discussion threads.
 
 == Conclusion
 #TODO[
   Recap shortly which problem you solved in your thesis and discuss your *contributions* here.
 ]
 
-This thesis integrates a review system into the Artemis programming exercise editor and turns consistency-related work into a structured, persistent workflow for instructors and editors. Instead of handling raw check output manually, instructors and editors can review consistency issues in context, collaborate through threads, and track resolution state across ongoing exercise refinement.
+This thesis integrates a review system into the Artemis programming exercise editor and turns consistency-related work into a structured, persistent workflow for instructors and editors. Instead of handling raw JSON output from a consistency check manually, instructors and editors can review consistency issues in context, collaborate through review threads, and track resolution state across ongoing exercise refinement.
 
 In addition, the thesis integrates consistency issues from consistency checks into the same review system, including consistency-issue visualization, controlled handling of suggested code changes, and navigation support. This improves transparency and reduces repetitive manual effort while keeping final decisions under human control. Overall, the implemented workflow represents a first step toward more automated exercise creation in Artemis, with clear opportunities for further expansion.
 

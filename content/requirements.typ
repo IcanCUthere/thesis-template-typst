@@ -17,9 +17,9 @@ This section summarizes the purpose and scope of the proposed system and outline
 #TODO[
   This section is only required if the proposed system (i.e. the system that you develop in the thesis) should replace an existing system.
 ]
-Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-assisted exercise creation assistant that helps instructors and editors create high-quality exercises more efficiently, including consistency checking. An instructor or editor can trigger a check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected consistency issues, including severity, category, and suggested fix description. The current interface exposes this output as raw JSON, so instructors and editors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
+Artemis already supports LLM-based consistency checks for programming exercises through the Hyperion module. Hyperion integrates via Spring AI and provides an AI-assisted exercise creation assistant that helps instructors and editors create high-quality exercises more efficiently, including consistency checking. An instructor or editor can trigger a consistency check that compares the problem statement, template, solution, and tests and returns a structured JSON list of detected consistency issues, including severity, category, and suggested fix description. The current interface exposes this output as raw JSON, so instructors and editors must manually interpret the results, locate the affected files and lines, and apply corrections themselves.
 
-The existing system does not persist consistency results. When the page reloads or the exercise version changes, Artemis discards detected consistency issues and users must rerun the check. Artemis also lacks a review thread mechanism for tracking resolution state and discussion over time, which makes cross-iteration consistency management and team coordination difficult.
+The existing system does not persist consistency issues. When the page reloads or the exercise version changes, Artemis discards detected consistency issues and users must rerun the consistency check. Artemis also lacks a review thread mechanism for tracking resolution state and discussion over time, which makes cross-iteration consistency management and team coordination difficult.
 
 == Proposed System
 #TODO[
@@ -51,7 +51,7 @@ This section specifies the functional requirements of the review workflow. Each 
 - *FR6 Show Threads Inline in the Editor:* The system shall display threads and their comments inside the editor at the referenced line location and provide navigation between threads.
 - *FR7 Hide Review Threads in the Editor:* The system shall allow instructors and editors to hide review threads in the editor view to reduce visual obstruction while editing code.
 - *FR8 Mark Threads as Resolved:* The system shall allow instructors and editors to mark threads as resolved and reflect the resolution status in both the inline view and any overview/navigation views.
-- *FR9 Update Thread Line References for New Exercise Versions:* The system shall update thread line references when instructors or editors create a new exercise version so existing threads remain linked to the correct locations in the updated files.
+- *FR9 Update Thread Line References for New Exercise Versions:* The system shall update thread line references when instructors or editors create a new exercise version so the system keeps existing threads linked to the correct locations in the updated files.
 - *FR10 Mark Threads as Outdated on Content Changes:* The system shall detect when the underlying line content at a thread’s referenced line location has changed and mark the thread as outdated to signal that the context may no longer match.
 - *FR11 Propagate Review Updates to Active Clients:* The system shall propagate thread and comment updates to other active clients that are working on the same exercise.
 
@@ -59,13 +59,13 @@ These requirements define the baseline review workflow, independent of how consi
 
 #par(first-line-indent: 0pt)[*Specific Consistency Issue Functionality*]
 
-- *FR12 Create Review Threads from Consistency Checks:* The system shall convert Hyperion consistency check results into review threads linked to the affected file and line range and shall store each consistency issue in the initial consistency comment of the corresponding thread.
+- *FR12 Create Review Threads from Consistency Checks:* The system shall convert Hyperion consistency check results into review threads, link each review thread to the affected file and line range, and store each consistency issue in the initial consistency comment of the corresponding thread.
 - *FR13 Provide Code-Change Previews:* The system shall present suggested code changes side by side with the current content to enable review before changes.
 - *FR14 Apply Suggested Code Changes:* The system shall allow instructors and editors to apply a suggested code change and update the exercise content accordingly.
 - *FR15 Validate Suggested Code Changes:* The system shall check that a suggested code change still matches the current file context before applying it.
 - *FR16 Provide Consistency Issue Overview and Navigation:* The system shall provide an overview list of detected consistency issues and allow instructors and editors to jump from this list to the corresponding locations in the editor.
 
-These requirements define the consistency-check-specific workflow and ensure that instructors and editors retain control over final changes while reducing manual edits.
+These requirements define the workflow for consistency checks and ensure that instructors and editors retain control over final changes while reducing manual edits.
 
 === Quality Attributes
 #TODO[
@@ -79,13 +79,13 @@ These requirements define the consistency-check-specific workflow and ensure tha
 This section details the quality attributes of the proposed system and defines criteria for evaluating operational performance and user experience. The attributes follow the Usability, Reliability, Performance, and Supportability (URPS) categories described by Bruegge and Dutoit #cite(<bruegge2004object>).
 
 - *QA1 Unobtrusive Inline Review (Usability):* Inline review elements shall remain unobtrusive during editing and shall not unnecessarily block code content.
-- *QA2 Clear Thread Visibility and State (Usability):* Thread location and status shall be immediately recognizable through indicators and labels (for example open, resolved, outdated).
-- *QA3 Safe Change Application (Reliability):* Suggested code changes shall only be applied after explicit confirmation and successful context validation; otherwise, no content shall be modified.
-- *QA4 Consistent Review State (Reliability):* Thread and comment states shall remain consistent across persistence, reloads, exercise-version updates, and concurrent client updates, with clear feedback on failures.
+- *QA2 Clear Thread Visibility and State (Usability):* The interface shall show thread location and status through indicators and labels (for example open, resolved, outdated) so instructors and editors can recognize them immediately.
+- *QA3 Safe Change Application (Reliability):* The system shall apply suggested code changes only after explicit confirmation and successful context validation; otherwise, the system shall leave the content unchanged.
+- *QA4 Consistent Review State (Reliability):* The system shall keep thread and comment states consistent across persistence, reloads, exercise-version updates, and concurrent client updates, and the system shall provide clear feedback on failures.
 - *QA5 Responsive Editor Interaction (Performance):* Editing interactions (typing, scrolling, cursor movement, thread expand/collapse, and issue navigation) shall remain responsive and non-blocking.
 - *QA6 Asynchronous Long-Running Operations (Performance):* Long-running operations (for example consistency checks) shall run asynchronously, and UI updates shall be incremental instead of full reloads.
 - *QA7 Extensible Review Model (Supportability):* The core review model shall support new AI-generated comment types without redesigning the thread workflow, storage model, or editor interaction.
-- *QA8 Stable Integration Boundaries (Supportability):* Comment-type-specific logic shall remain isolated from the shared thread lifecycle, and integration with existing Artemis workflows shall remain stable as extensions are added.
+- *QA8 Stable Integration Boundaries (Supportability):* The architecture shall isolate comment-type-specific logic from the shared thread lifecycle, and the architecture shall keep integration with existing Artemis workflows stable as extensions are added.
 
 === Constraints
 
@@ -98,12 +98,12 @@ This section details the quality attributes of the proposed system and defines c
 
 ]
 
-Constraints define limitations and boundary conditions under which the system must operate. They are typically imposed by technical, organizational, or external factors and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Bruegge and Dutoit group constraints into implementation, interface, and operations requirement categories, and this thesis uses the same grouping below. Packaging and legal requirement categories are currently out of scope for this thesis prototype.
+Constraints define limitations and boundary conditions under which the system must operate. Technical, organizational, and external factors typically impose these limitations and influence architecture and design decisions without describing functional behavior directly #cite(<bruegge2004object>). Bruegge and Dutoit group constraints into implementation, interface, and operations requirement categories, and this thesis uses the same grouping below. This thesis currently excludes packaging and legal requirement categories from the prototype scope.
 
 - *C1 Platform Constraint (Implementation Requirement):* The implementation shall stay within the existing Artemis client-server architecture and codebase.
-- *C2 Persistence and Compatibility Constraint (Interface Requirement):* Review data shall be persisted in the Artemis database and remain compatible with Artemis migration workflows and supported database configurations.
-- *C3 Role Constraint (Operations Requirement):* Review functionality during operation shall be restricted to authorized teaching roles (editor level and above).
-- *C4 Prompt Data Minimization Constraint (Operations Requirement):* LLM prompts shall include only the data required for the specific consistency check, and prompt payloads shall be kept as short as possible to reduce token usage while preserving sufficient context for reliable results.
+- *C2 Persistence and Compatibility Constraint (Interface Requirement):* Artemis shall persist review data in the Artemis database and keep that data compatible with Artemis migration workflows and supported database configurations.
+- *C3 Role Constraint (Operations Requirement):* Artemis shall restrict review functionality during operation to authorized teaching roles (editor level and above).
+- *C4 Prompt Data Minimization Constraint (Operations Requirement):* Artemis shall include only the data required for the specific consistency check in LLM prompts, and Artemis shall keep prompt payloads as short as possible to reduce token usage while preserving sufficient context for reliable results.
 
 == System Models
 #TODO[
@@ -125,11 +125,12 @@ This section uses system models to illustrate the requirements from multiple per
 #par(first-line-indent: 0pt)[*Visionary Scenario 1 - Automatic Revision Support*]
 Nina, an experienced instructor for Software Engineering, prepares a complex programming exercise for the upcoming semester. She opens the exercise editor in Artemis, runs a consistency check, and the system automatically applies the suggested code changes across the problem statement, template, solution, and tests. The review threads explain each change in context through their initial consistency comments, highlight the affected lines, and summarize the rationale so Nina can verify the result without additional steps.
 
-After the update, the system keeps the resolved threads linked to the new exercise version and shows which changes resulted from the automated fixes. Nina scans the overview list to confirm that all high-severity consistency issues are resolved, checks a few review threads for clarity, and continues refining the exercise content. This visionary scenario outlines a future state in which consistency support during exercise creation becomes largely automatic while still keeping instructors in control through transparent review threads and history across exercise versions.
+After the update, the system keeps the resolved threads linked to the new exercise version and shows which changes resulted from the automated fixes. Nina scans the overview list, confirms that no high-severity consistency issues remain, checks a few review threads for clarity, and continues refining the exercise content. This visionary scenario outlines a future state in which consistency support during exercise creation becomes largely automatic while still keeping instructors in control through transparent review threads and history across exercise versions.
 
 #par(first-line-indent: 0pt)[*Visionary Scenario 2 - LLM-Assisted Exercise Expansion*]
 Kai, an instructor for Software Architecture, wants to expand an exercise with an additional design-pattern task. He adds a comment in a review thread that describes the new requirement and the expected learning outcome. The system sends the comment to the LLM and returns code suggestions that extend the problem statement, template, solution, and tests to match the new task. The review thread explains the proposed changes and highlights the new sections so Kai can review the expansion in context. This visionary scenario shows how instructors can use comments in review threads to request substantial exercise extensions while keeping the process transparent and aligned with their intent.
 
+#pagebreak()
 #par(first-line-indent: 0pt)[*Demo Scenario 1 - Collaborative Review without Consistency Check*]
 
 Lea and Omar, two instructors for Software Engineering, review a new programming exercise before the semester starts. Lea spots an ambiguous requirement in the problem statement and adds a comment in a review thread at the exact line, proposing clearer wording and a concrete example. Omar opens the review thread, asks for a minor adjustment, and adds a follow-up suggestion that aligns the wording with the template variables. Lea agrees with this suggestion, updates the text, and marks the thread as resolved.
@@ -140,7 +141,7 @@ During the same review, Omar notices that the expected input format appears in t
 
 Sofia, an instructor for Software Architecture, runs a consistency check on a multi-file exercise. The system returns review threads inline in the editor, each starting with a consistency comment labeled with severity, affected location, and a suggested fix description. Sofia opens the overview list, filters for high-severity consistency issues, and navigates to a thread that flags a consistency issue between the problem statement and the solution signature. She opens the suggested code-change preview, compares it with the current code, and applies the change with one click. The system updates the file, records the applied change, and marks the thread as resolved.
 
-Sofia then reviews a second thread that proposes an edit in the test file. She notices that the file has changed since the check and the system warns that the thread is outdated. She reruns the check, receives an updated thread, and applies the corrected fix. The review threads persist with their resolved status, and the overview confirms that no high-severity consistency issues remain.
+Sofia then reviews a second thread that proposes an edit in the test file. She notices that the file has changed since the consistency check, and the system warns that the thread is outdated. She reruns the consistency check, receives an updated thread, and applies the corrected fix. The system keeps the review threads in their resolved state, and the overview confirms that no high-severity consistency issues remain.
 
 === Use Case Model
 #TODO[
@@ -171,7 +172,7 @@ The model focuses on thread lifecycle management in the editor. It makes explici
 
 #ref(<UseCaseConsistency>) structures the consistency workflow around two main use cases: checking consistency and jumping to a consistency issue. Checking consistency serves as the entry point and provides the detected issues that instructors and editors then address through issue navigation. Jumping to a consistency issue extends to applying a code change only when an instructor or editor accepts the proposed fix. Applying a code change includes toggling the related thread as resolved, because the accepted fix resolves that consistency issue.
 
-This model separates check execution from follow-up actions on individual consistency issues. Artemis runs the consistency check first, and instructors and editors then navigate to issues to inspect and resolve them. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
+This model separates consistency check execution from follow-up actions on individual consistency issues. Artemis runs the consistency check first, and instructors and editors then navigate to consistency issues to inspect and resolve them. This keeps the consistency workflow transparent and preserves human control over whether and when instructors and editors apply suggested code changes.
 
 === Analysis Object Model
 #TODO[
@@ -180,7 +181,7 @@ This model separates check execution from follow-up actions on individual consis
 ]
 
 
-The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise is composed of one ProblemStatement and three or more ExerciseRepositories, and each repository aggregates Files. A File contains text and a path, and together with the ProblemStatement it provides the context in which review Threads are shown.
+The analysis object model in #ref(<AOM>) describes the core domain concepts of the review system and their relationships. A ProgrammingExercise contains one ProblemStatement and three or more ExerciseRepositories, and each ExerciseRepository aggregates Files. A File contains text and a path, and together with the ProblemStatement it provides the context in which the system shows review Threads.
 
 #figure(   
   image("../figures/AOM Diagram.pdf", width: 95%),                                    
@@ -201,11 +202,11 @@ The activity diagram in #ref(<ACTDIA>) models the dynamic behavior of the review
 
 For every consistency issue, the Instructor first jumps to it and then decides whether the suggested code fix makes sense. When it does not make sense, the Instructor changes the code manually. When it does make sense, the Instructor presses “Apply”, and Artemis applies the changes to the exercise. In both cases, the Instructor then presses “Resolve”, after which Artemis stores the resolved state and hides the thread.
 
-After resolving a consistency issue, the Instructor presses “Submit”, and Artemis saves the exercise and creates a new exercise version. The workflow then checks whether more consistency issues are unresolved. If so, it loops back to the next consistency issue; otherwise, it ends. This model highlights the human-in-the-loop control flow and the system’s role in storing review threads, resolution state, and exercise versions across the review process.
+After resolving a consistency issue, the Instructor presses “Submit”, and Artemis saves the exercise and creates a new exercise version. The workflow then checks whether more consistency issues remain unresolved. If more consistency issues remain unresolved, the workflow loops back to the next consistency issue. Otherwise, the workflow ends. This model highlights the human-in-the-loop control flow and shows how Artemis stores review threads, resolution state, and exercise versions across the review process.
 
 #figure(   
   image("../figures/Activity Diagram.pdf", width: 95%),                                    
-  caption: [Activity Diagram of the Consistency Review Workflow. The diagram shows check execution, consistency-issue review, fix decisions, resolution, and submission.],
+  caption: [Activity Diagram of the Consistency Review Workflow. The diagram shows consistency check execution, consistency-issue review, fix decisions, resolution, and submission.],
 ) <ACTDIA>
 
 === User Interface
