@@ -155,23 +155,23 @@ The primary actors are Instructor and Editor. Instructors and editors use the re
 
 #figure(   
   image("../figures/UseCaseDefault.pdf", width: 95%),                                    
-  caption: [Basic Review Collaboration Use Cases. The diagram shows thread creation, discussion, resolution, and version-related updates in the base workflow.],
+  caption: [Basic Review Collaboration Use Cases. The diagram shows thread creation, discussion, and resolution in the base workflow.],
 ) <UseCaseBasic>
 
-#ref(<UseCaseBasic>) models the core review mechanisms without consistency checks as six main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, toggling a thread as resolved, and submitting changes. Starting a thread includes adding the initial comment, and a thread remains valid only when it contains at least one comment. Toggling a thread as resolved includes hiding the thread in the editor to keep code editing unobstructed. Deleting a comment extends deleting a thread when the removed comment is the last remaining entry in that thread, so the system does not keep empty threads.
+#ref(<UseCaseBasic>) models the core review mechanisms without consistency checks as five main user paths: starting a thread, adding a comment, editing a comment, deleting a comment, and toggling a thread as resolved. Starting a thread includes adding the initial comment, because a thread is only valid when it contains at least one comment. Instructors and editors can also add comments to existing threads. Toggling a thread as resolved includes hiding the thread in the editor to keep code editing unobstructed. Deleting a comment also deletes its thread when the removed comment is the last remaining entry in that thread, so the system does not keep empty threads.
 
-The model links review actions to exercise changes. Submitting changes includes creating a new exercise version so accepted edits remain traceable in version history. The versioning step extends thread-anchor updates and marking threads as outdated when file edits shift, replace, or remove referenced code ranges. This structure keeps the basic review flow compact while making explicit how collaborative editing decisions propagate into version history and thread state management.
+The model focuses on thread lifecycle management in the editor. It makes explicit how collaborative actions change thread state, preserve discussion context, and keep review decisions visible to instructors and editors.
 
 #par(first-line-indent: 0pt)[*Consistency Check Review Use Cases*]
 
 #figure(   
   image("../figures/UseCaseConsistency.pdf", width: 95%),                                    
-  caption: [Consistency-Check Review Use Cases. The diagram shows consistency-issue generation, grouping, navigation, and optional application of suggested code changes.],
+  caption: [Consistency-Check Review Use Cases. The diagram shows consistency checking, issue navigation, and optional application of suggested code changes.],
 ) <UseCaseConsistency>
 
-#ref(<UseCaseConsistency>) structures the consistency workflow around two main use cases: checking consistency and jumping to a consistency issue. Checking consistency includes storing detected consistency issues as review threads, and storing consistency issues includes creating a thread group so generated threads stay organized. Jumping to a consistency issue extends to applying a code change only when an instructor or editor accepts the proposed fix. Applying a code change includes toggling the related thread as resolved, because the accepted fix resolves that consistency issue.
+#ref(<UseCaseConsistency>) structures the consistency workflow around two main use cases: checking consistency and jumping to a consistency issue. Checking consistency serves as the entry point and provides the detected issues that instructors and editors then address through issue navigation. Jumping to a consistency issue extends to applying a code change only when an instructor or editor accepts the proposed fix. Applying a code change includes toggling the related thread as resolved, because the accepted fix resolves that consistency issue.
 
-This model separates automated consistency-issue generation from follow-up actions on individual consistency issues. Artemis always persists and groups detected consistency issues during check execution, while instructors and editors decide case by case whether to apply suggested changes during navigation. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
+This model separates check execution from follow-up actions on individual consistency issues. Artemis runs the consistency check first, and instructors and editors then navigate to issues to inspect and resolve them. This keeps the consistency workflow transparent and preserves human control over whether and when suggested changes are applied.
 
 === Analysis Object Model
 #TODO[
@@ -187,11 +187,11 @@ The analysis object model in #ref(<AOM>) describes the core domain concepts of t
   caption: [Analysis Object Model of the Review Domain. The model shows core entities and relations for exercises, files, threads, and comment types.],
 ) <AOM>
 
-A Thread captures a discussion at a specific line. It stores its resolution state, outdated state, and lineNumber, and it offers operations to add and manage comments. Both Files and the ProblemStatement can show multiple Threads. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
+A Thread captures a discussion at a specific line. It stores its resolution state, outdated state, and lineNumber, and it provides operations for anchoring itself in the problem statement or in a file and for managing its state. Both Files and the ProblemStatement can show multiple Threads. Each Thread composes one or more Comments, which ensures that comments do not exist without a parent thread.
 
-Comment acts as an abstract superclass with a shared text attribute and allows additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents user-written discussion and stores an author, while ConsistencyComment represents consistency issues and carries severity, category, and codeReplacement information with an applyReplacement action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
+Comment acts as an abstract superclass with a shared text attribute and allows additional comment types in the future. The model distinguishes two concrete comment types: UserComment represents user-written discussion and stores an author, while ConsistencyComment represents consistency issues and carries severity, category, and codeChange information with an applyCodeChange action. This specialization captures the different semantics of manual review and automated consistency feedback while keeping the discussion structure uniform.
 
-The model focuses on domain concepts that users reason about during review: exercises, the problem statement, repositories, files, threads, and comment types. It separates comment text and consistency-issue metadata from file context and thread state, which clarifies ownership. This structure keeps the review workflow consistent whether consistency issues originate from manual discussion or from consistency checks.
+The model additionally includes a ConsistencyChecker that runs consistency checks on exercise content. The checker evaluates a ProgrammingExercise with stored instructions and creates ConsistencyComments. These comments use the same thread structure as manual feedback. ProblemStatement and File provide editing operations for regular authoring changes before and after checks. This design keeps responsibilities clear and keeps one review workflow for manual discussion and automated consistency findings.
 
 === Dynamic Model
 #TODO[
