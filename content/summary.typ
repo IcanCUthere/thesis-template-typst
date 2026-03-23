@@ -76,7 +76,7 @@ In addition, the thesis integrates consistency issues from consistency checks in
   Tell us the next steps (that you would do if you have more time). Be creative, visionary and open-minded here.
 ]
 
-Future work should first close the remaining gaps of this thesis, especially the partially fulfilled requirements in #ref(<FRStatusTable>). This includes full thread-visibility control in the editor (beyond collapsing) and a unified, configurable overview that supports navigation across all thread types.
+Future work should first close the remaining gaps of this thesis, especially the partially fulfilled requirements in #ref(<FRStatusTable>). This includes full thread-visibility control in the editor (beyond collapsing) and a unified, configurable overview that supports navigation across all thread types. Another extension could also allow instructors and editors to apply all suggested code changes of a thread group in one step instead of applying them thread by thread.
 
 Beyond these near-term completions, the long-term direction is broader automation of exercise creation workflows. One next step is comment-driven expansion, where instructors and editors can write intent as comments in review threads and let the system generate coordinated updates across the problem statement, template, solution, and tests.
 
